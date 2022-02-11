@@ -66,9 +66,10 @@ export function decodedResistorValue(colors: string[]): string {
   // console.log("ohmVal3 :>> ", ohmVal3);
   let v = Number(`${ohmVal1}${ohmVal2}`) * 10 ** ohmVal3;
   // console.log("v :>> ", v);
-  let units = " ohms";
+  let units = "ohms";
   if (v >= 1000) {
-    return v / 1000 + " kiloohms";
+    v /= 1000;
+    units = "kiloohms";
   }
-  return v + units;
+  return `${v} ${units}`;
 }

@@ -1,4 +1,4 @@
-export function decodedResistorValue(colors: string[]) {
+export function decodedResistorValueOne(colors: string[]): string {
   // throw new Error('Remove this statement and implement this function')
 
   const dict: { [key: string]: number } = {
@@ -32,12 +32,43 @@ export function decodedResistorValue(colors: string[]) {
     ""
   );
 
-  console.log("typeof zerosString :>> ", typeof zerosString);
-  console.log("zerosString :>> ", zerosString);
   const ohmsVal = Number(`${expected}${zerosString}`);
   // console.log("ohmsVal :>> ", ohmsVal);
   if (ohmsVal >= 1000) {
     return `${ohmsVal / 1000} kiloohms`;
   }
   return `${ohmsVal} ohms`;
+}
+
+export function decodedResistorValue(colors: string[]): string {
+  const find = (color: string) => {
+    const options = [
+      "black",
+      "brown",
+      "red",
+      "orange",
+      "yellow",
+      "green",
+      "blue",
+      "violet",
+      "grey",
+      "white",
+    ];
+    return options.indexOf(color);
+  };
+  // console.log("colors[0] :>> ", colors[0]);
+  // console.log("colors[1] :>> ", colors[1]);
+  const ohmVal1 = find(colors[0]);
+  const ohmVal2 = find(colors[1]);
+  const ohmVal3 = find(colors[2]);
+  // console.log("ohmVal1 :>> ", ohmVal1);
+  // console.log("ohmVal2 :>> ", ohmVal2);
+  // console.log("ohmVal3 :>> ", ohmVal3);
+  let v = Number(`${ohmVal1}${ohmVal2}`) * 10 ** ohmVal3;
+  // console.log("v :>> ", v);
+  let units = " ohms";
+  if (v >= 1000) {
+    return v / 1000 + " kiloohms";
+  }
+  return v + units;
 }

@@ -21,13 +21,21 @@ export function decodedResistorValue(colors: string[]) {
   const numberOfZeros = dict[thirdColor];
   // console.log("numberOfZeros :>> ", numberOfZeros);
   const expected = Number(`${dict[firstColor]}${dict[secondColor]}`);
-  let zerosString = "";
-  for (let i = 0; i < numberOfZeros; i++) {
-    zerosString += 0;
-  }
-  // console.log("zerosString :>> ", zerosString);
+  // NOTE: make array of the length of the number of zeros
+  const numZerosArray = [...Array(numberOfZeros).keys()];
+  console.log("numZerosArray :>> ", numZerosArray);
+  // NOTE: make string of zeros
+  const zerosString = numZerosArray.reduce(
+    (str: string, num: number): string => {
+      return (str += "0");
+    },
+    ""
+  );
+
+  console.log("typeof zerosString :>> ", typeof zerosString);
+  console.log("zerosString :>> ", zerosString);
   const ohmsVal = Number(`${expected}${zerosString}`);
-  console.log("ohmsVal :>> ", ohmsVal);
+  // console.log("ohmsVal :>> ", ohmsVal);
   if (ohmsVal >= 1000) {
     return `${ohmsVal / 1000} kiloohms`;
   }

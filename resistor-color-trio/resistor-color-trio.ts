@@ -42,7 +42,7 @@ export function decodedResistorValueOne(colors: string[]): string {
 
 export function decodedResistorValue(colors: string[]): string {
   const find = (color: string) => {
-    const options = [
+    const options: string[] = [
       "black",
       "brown",
       "red",
@@ -54,6 +54,7 @@ export function decodedResistorValue(colors: string[]): string {
       "grey",
       "white",
     ];
+    // console.log("options.indexOf(color); :>> ", options.indexOf(color));
     return options.indexOf(color);
   };
   // console.log("colors[0] :>> ", colors[0]);
@@ -64,8 +65,11 @@ export function decodedResistorValue(colors: string[]): string {
   // console.log("ohmVal1 :>> ", ohmVal1);
   // console.log("ohmVal2 :>> ", ohmVal2);
   // console.log("ohmVal3 :>> ", ohmVal3);
-  let v = Number(`${ohmVal1}${ohmVal2}`) * 10 ** ohmVal3;
-  // console.log("v :>> ", v);
+
+  // Multiply ohmVal1 by 10 to move it to tens place and multiply the whole
+  // thing by 10^ohmVal3
+  let v = (ohmVal1 * 10 + ohmVal2) * 10 ** ohmVal3;
+  console.log("v :>> ", v);
   let units = "ohms";
   if (v >= 1000) {
     v /= 1000;

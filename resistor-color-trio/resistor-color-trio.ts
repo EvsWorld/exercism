@@ -16,17 +16,20 @@ export function decodedResistorValue(colors: string[]) {
   const firstColor: string = colors[0];
   const secondColor: string = colors[1];
   const thirdColor: string = colors[2];
-  console.log(`firstVal: ${dict[firstColor]}`);
-  console.log(`secondVal: ${dict[secondColor]}`);
+  // console.log(`firstVal: ${dict[firstColor]}`);
+  // console.log(`secondVal: ${dict[secondColor]}`);
   const numberOfZeros = dict[thirdColor];
-  console.log("numberOfZeros :>> ", numberOfZeros);
+  // console.log("numberOfZeros :>> ", numberOfZeros);
   const expected = Number(`${dict[firstColor]}${dict[secondColor]}`);
   let zerosString = "";
   for (let i = 0; i < numberOfZeros; i++) {
     zerosString += 0;
   }
-  console.log("zerosString :>> ", zerosString);
-  const wZeros = `${expected}${zerosString}`;
-  console.log("wZeros :>> ", wZeros);
-  return wZeros + " ohms";
+  // console.log("zerosString :>> ", zerosString);
+  const ohmsVal = Number(`${expected}${zerosString}`);
+  console.log("ohmsVal :>> ", ohmsVal);
+  if (ohmsVal >= 1000) {
+    return `${ohmsVal / 1000} kiloohms`;
+  }
+  return `${ohmsVal} ohms`;
 }

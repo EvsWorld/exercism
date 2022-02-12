@@ -22,5 +22,5 @@ export function isLeap(year: number) {
     return true;
   }
   console.log("not divisible by 4");
-  return true;
+  return false;
 }

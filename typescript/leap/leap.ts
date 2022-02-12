@@ -1,13 +1,11 @@
 export function isLeap(year: number) {
-  const divisibleBy400 = year % 400 === 0;
-  const divisibleBy4 = year % 4 === 0;
-  const divisibleBy100 = year % 100 === 0;
-  if (divisibleBy4) {
+  const divisibleBy = (number: number): boolean => year % number === 0;
+  if (divisibleBy(4)) {
     console.log("divisible by 4");
-    if (divisibleBy100) {
+    if (divisibleBy(100)) {
       console.log("divisible by 4 and 100, so not leap year");
       // unless... if its divisible by 400, then is leap year
-      if (divisibleBy400) {
+      if (divisibleBy(400)) {
         console.log(
           "divisible by 4 and 100(not lp yr) but is divisible by 400, (so is lp yr)"
         );

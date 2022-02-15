@@ -6,10 +6,9 @@ export function toRna(dna: string) {
     T: "A",
     A: "U",
   };
-  return dna
-    .split("")
+  return [...dna]
     .map((d) => {
-      if (!["G", "C", "T", "A"].includes(d)) {
+      if (!Object.keys(trans).includes(d)) {
         throw new Error("Invalid input DNA.");
       }
       return trans[d];

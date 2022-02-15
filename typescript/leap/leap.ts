@@ -1,4 +1,8 @@
-export function isLeap(year: number) {
+// on every year that is evenly divisible by 4
+//   except every year that is evenly divisible by 100
+//     unless the year is also evenly divisible by 400
+
+export function isLeapOne(year: number) {
   const divisibleBy = (number: number): boolean => year % number === 0;
   if (divisibleBy(4)) {
     console.log("divisible by 4");
@@ -21,4 +25,9 @@ export function isLeap(year: number) {
   }
   console.log("not divisible by 4");
   return false;
+}
+
+export function isLeap(year: number) {
+  const divisibleBy = (number: number): boolean => year % number === 0;
+  return divisibleBy(4) && !divisibleBy(100);
 }

@@ -29,7 +29,7 @@ describe("A leap year", () => {
     expect(isLeap(2000)).toBe(true);
   });
 
-  test("year divisible by 400 but not by 125 is still a leap year", () => {
+  test.only("year divisible by 400 but not by 125 is still a leap year", () => {
     expect(isLeap(2400)).toBe(true);
   });
 

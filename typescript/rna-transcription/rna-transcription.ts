@@ -14,3 +14,4 @@ export function toRna(dna: string) {
     return acc;
   }, "");
 }
+console.log(toRna("G"));

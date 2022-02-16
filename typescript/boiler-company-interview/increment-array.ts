@@ -26,15 +26,18 @@ export function incrementArray(arr: number[]) {
   return final;
 }
 
-function incrementArrayFor(arr: number[]) {
+export function incrementArrayFor(arr: number[]) {
   for (let i = arr.length - 1; i >= 0; i--) {
-    console.log(arr[i]);
+    // console.log("iterating..", arr[i]);
 
-    if (arr[i] === 9 && arr[arr.length] === 9) {
+    if (arr[i] === 9) {
       arr[i] = 0;
+      console.log("\n*Got a 9! arr[i] = 0 :>> ", arr[i]);
+    } else {
+      arr[i] += 1;
+      console.log("\n*Not a 9 arr[i] +=1 :>> ", arr[i]);
+      return arr;
     }
-
-    arr[i] += 1;
   }
 }
 

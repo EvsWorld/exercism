@@ -59,24 +59,20 @@ export function incrementArrayFor2(arr: number[]) {
 }
 
 // experiment
-interface lessThanFiveParams {
-  myV: number;
-  myI: number;
-  myA: number[];
-}
+type NumOrString = number | string;
 
 export function betweenFiveAndTwo(
-  myV: number,
+  myV: NumOrString,
   myI: number,
-  myA: number[]
+  myA: NumOrString[]
 ): boolean {
-  return myA[myI] < 5 && myV > 2;
+  return (myA[myI] < 5 && myV > 2) || myV === "apple";
 }
 
 export function filterInPlace(
-  a: number[],
-  condition: (val: number, myi: number, ar: number[]) => boolean
-): number[] {
+  a: NumOrString[],
+  condition: (val: NumOrString, myi: number, ar: NumOrString[]) => boolean
+): NumOrString[] {
   let i = 0,
     j = 0;
 
@@ -90,7 +86,9 @@ export function filterInPlace(
   a.length = j;
   return a;
 }
-console.log(filterInPlace([1, 2, 3, 4, 5, 6, 7, 8, 9], betweenFiveAndTwo));
+console.log(
+  filterInPlace([1, 2, 3, 4, "apple", 5, 6, 7, 8, 9], betweenFiveAndTwo)
+);
 
 // experiment
 export function count<T>(source: T[], predicate: (x: T) => boolean): number {
@@ -115,3 +113,66 @@ console.log(
   calculatePercentage([true, true, false, false, true, true, true, true])
 );
 console.log(calculatePercentageGreaterThanFive([6, 1, 1, 1, 1, 1, 1, 1, 2, 2]));
+
+// experiment with generic types
+// NOTE: so the <T> at the beginning of the function is just simply replaced.
+// Anywhere you see it its just replaced
+
+export function addOrReplace<T>(
+  source: T[],
+  item: T,
+  replacePredicate: (x: T) => boolean
+): T[] {
+  const result: T[] = [];
+  let found = false;
+
+  for (let i = 0; i < source.length; i++) {
+    const currentItem = source[i];
+
+    if (replacePredicate(currentItem)) {
+      found = true;
+      result.push(item);
+    } else {
+      result.push(currentItem);
+    }
+  }
+
+  if (!found) {
+    result.push(item);
+  }
+
+  return result;
+}
+
+console.log(addOrReplace([1, 2, 3, 4, 5, 6, 7], 100, (x) => x === 6));
+console.log(
+  addOrReplace(["red", "green", "blue"], "rainbo", (x) => x === "blue")
+);
+
+interface ColorObject {
+  p1: string;
+  p2: string;
+  p3: string;
+}
+console.log(
+  addOrReplace<ColorObject>(
+    [
+      { p1: "blue", p2: "red", p3: "green" },
+      { p1: "blue", p2: "red", p3: "purple" },
+    ],
+    { p1: "blue", p2: "red", p3: "black" },
+    (x) => x.p3 === "green"
+  )
+);
+
+// experiment with sets
+
+function showSet<T>(s: T[]) {
+  const set1 = new Set(s);
+  set1.clear;
+  console.log("set1 :>> ", set1);
+  console.log("set1.size :>> ", set1.size);
+  return [...set1];
+  // return Array.from(set1); // may have to do this with typescript
+}
+console.log(showSet([1, 2, 2, 2, 2, 2, 3, 4, 5, 6, 7]));

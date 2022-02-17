@@ -149,19 +149,19 @@ console.log(
   addOrReplace(["red", "green", "blue"], "rainbo", (x) => x === "blue")
 );
 
-interface ColorObject {
-  p1: string;
-  p2: string;
-  p3: string;
-}
+// computed properties used to make mapped type
+type ColorKeys = "color" | "description" | "texture";
+type ColorObject = {
+  [key in ColorKeys]: string;
+};
 console.log(
   addOrReplace<ColorObject>(
     [
-      { p1: "blue", p2: "red", p3: "green" },
-      { p1: "blue", p2: "red", p3: "purple" },
+      { color: "blue", description: "like the sky", texture: "velvety" },
+      { color: "red", description: "like a firetruck", texture: "hardish" },
     ],
-    { p1: "blue", p2: "red", p3: "black" },
-    (x) => x.p3 === "green"
+    { color: "purple", description: "red", texture: "scratchy" },
+    (x) => x.color === "red"
   )
 );
 
@@ -176,3 +176,28 @@ function showSet<T>(s: T[]) {
   // return Array.from(set1); // may have to do this with typescript
 }
 console.log(showSet([1, 2, 2, 2, 2, 2, 3, 4, 5, 6, 7]));
+
+// experiment with Omit and remove functions
+export function omit<T extends Object, K extends keyof T>(
+  source: T,
+  key: K
+): Omit<T, K> {
+  const { [key]: omitted, ...rest } = source;
+
+  return rest;
+}
+
+export function removePropertiesFromObject<T extends Object, K extends keyof T>(
+  source: T,
+  keys: K[]
+): Partial<T> {
+  const { ...clone } = source;
+
+  for (let i = 0; i < keys.length; i++) {
+    if (clone.hasOwnProperty(keys[i])) {
+      delete clone[keys[i]];
+    }
+  }
+
+  return clone;
+}

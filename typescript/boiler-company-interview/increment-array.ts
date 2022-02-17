@@ -1,3 +1,5 @@
+// * Goal: make a function that inputs an array like this, and outputs it like so
+
 // Input [1,2,3]
 // Out [1,2,4]
 
@@ -40,5 +42,3 @@ export function incrementArrayFor(arr: number[]) {
     }
   }
 }
-
-// console.log(helloWorld([1, 2, 3]));

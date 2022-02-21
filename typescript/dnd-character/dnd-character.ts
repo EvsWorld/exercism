@@ -2,25 +2,35 @@ function removeSmallest(arr: number[]) {
   const min = Math.min(...arr);
   return arr.filter((e) => e !== min);
 }
-export class DnDCharacter {
-  constitution: number = 0;
-  strength: number = 0;
-  dexterity: number = 0;
-  wisdom: number = 0;
-  intelligence: number = 0;
-  charisma: number = 0;
-  hitpoints: number = 10;
+
+interface IDnDCharacter {
+  constitution: number;
+  strength: number;
+  dexterity: number;
+  wisdom: number;
+  intelligence: number;
+  charisma: number;
+  hitpoints: number;
+}
+export class DnDCharacter implements IDnDCharacter {
+  constitution = DnDCharacter.generateAbilityScore();
+  strength = DnDCharacter.generateAbilityScore();
+  dexterity = DnDCharacter.generateAbilityScore();
+  wisdom = DnDCharacter.generateAbilityScore();
+  intelligence = DnDCharacter.generateAbilityScore();
+  charisma = DnDCharacter.generateAbilityScore();
+  hitpoints = 10 + DnDCharacter.getModifierFor(this.constitution);
 
   public static generateAbilityScore(): number {
-    const randomArrayLength = () => Math.round(Math.random() * 5 + 1);
+    const roll = () => Math.round(Math.random() * 5 + 1);
     let tries = [0, 0, 0, 0].map((d) => {
-      return randomArrayLength();
+      return roll();
     });
-    // console.log("tries :>> ", tries);
+    console.log("tries :>> ", tries);
     tries = removeSmallest(tries);
-    // console.log("tries :>> ", tries);
+    console.log("tries :>> ", tries);
     const sum = tries.reduce((acc, current) => acc + current);
-    // console.log("sum :>> ", sum);
+    console.log("sum :>> ", sum);
     return sum;
   }
 
@@ -28,7 +38,5 @@ export class DnDCharacter {
     return Math.floor((abilityValue - 10) / 2);
   }
 }
-const character = new DnDCharacter();
-// console.log(DnDCharacter.getModifierFor(25));
 console.log(DnDCharacter.getModifierFor(3));
 console.log(DnDCharacter.generateAbilityScore());

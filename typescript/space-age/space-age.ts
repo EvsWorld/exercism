@@ -1,5 +1,12 @@
-function roundToTwo(num) {
-  return +(Math.round(num + "e+2") + "e-2");
+function roundTo(n: number, digits: number) {
+  if (digits === undefined) {
+    digits = 0;
+  }
+
+  var multiplicator = Math.pow(10, digits);
+  n = parseFloat((n * multiplicator).toFixed(11));
+  var test = Math.round(n) / multiplicator;
+  return +test.toFixed(digits);
 }
 
 export function age(planet: string, seconds: number): number {
@@ -17,5 +24,5 @@ export function age(planet: string, seconds: number): number {
     uranus: 84.016846,
     neptune: 164.79132,
   };
-  return roundToTwo(seconds / (planets[planet] * earthSeconds));
+  return roundTo(seconds / (planets[planet] * earthSeconds), 2);
 }

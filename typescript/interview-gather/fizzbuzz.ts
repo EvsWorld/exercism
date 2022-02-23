@@ -34,6 +34,32 @@ function fizzBuzzFor(n: number) {
 
 // fizzBuzzFor(15);
 
+// recursive fizzbuzz
+function fizzBuzzRecursive(start: number, end: number): (string | number)[] {
+  if (start === end) {
+    return [start];
+  } else {
+    let p: string | number = "";
+    const countArray = fizzBuzzRecursive(start, end - 1);
+    console.log("start :>> ", start);
+    console.log("end :>> ", end);
+    if (end % 3 === 0) {
+      p += "fizz";
+    }
+    if (end % 5 === 0) {
+      p += "buzz";
+    }
+    if (p === "") {
+      p = end;
+    }
+    countArray.push(p);
+    console.log(countArray);
+    return countArray;
+  }
+}
+
+console.log(fizzBuzzRecursive(1, 15));
+
 // now refactor in functional style.
 // Should return array
 function fizzBuzz(start: number, end: number) {
@@ -55,7 +81,7 @@ function fizzBuzz(start: number, end: number) {
   return r;
 }
 
-console.log(fizzBuzz(1, 15));
+// console.log(fizzBuzz(1, 15));
 // const fizzBuzz15 = fizzBuzz(1, 15);
 // console.log("fizzBuzz15 :>> ", fizzBuzz15);
 
@@ -78,5 +104,4 @@ function fizzBuzzWhile(n: number) {
   }
 }
 
-console.log(fizzBuzzWhile(15));
-// recursive fizzbuzz
+// console.log(fizzBuzzWhile(15));

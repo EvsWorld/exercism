@@ -34,7 +34,16 @@ function fizzBuzzFor(n: number) {
 
 // fizzBuzzFor(15);
 
-// recursive fizzbuzz
+// NOTE:
+// If the recursive call occurs at the end of a method, it is called a
+// *tail* recursion. The tail recursion is similar to a loop. The method executes
+// all the statements before jumping into the next recursive call.
+
+// If the recursive call occurs at the beginning of a method, it is called a
+// *head* recursion. The method saves the state before jumping into the next
+// recursive call.
+
+// recursive fizzbuzz outputting array (tail)
 function fizzBuzzRecursive(start: number, end: number): (string | number)[] {
   if (start === end) {
     return [start];
@@ -53,16 +62,17 @@ function fizzBuzzRecursive(start: number, end: number): (string | number)[] {
       p = end;
     }
     countArray.push(p);
-    console.log(countArray);
+    // console.log(countArray);
     return countArray;
   }
 }
 
-console.log(fizzBuzzRecursive(1, 15));
+// console.log(fizzBuzzRecursive(1, 15));
 
-// fizzbuzz recursion 2
-
+// fizzbuzz recursion 2 (tail)
 function fizzBuzzRecursive2(start: number, end: number) {
+  console.log("start :>> ", start);
+  console.log("end :>> ", end);
   let p: string | number = "";
   if (start % 3 === 0) {
     p += "fizz";
@@ -79,6 +89,53 @@ function fizzBuzzRecursive2(start: number, end: number) {
   }
 }
 console.log(fizzBuzzRecursive2(1, 15));
+
+// fizzbuzz recursion 3 (tail)
+function fizzBuzzRecursive3(start: number, end: number) {
+  let p: string | number = "";
+  console.log("start :>> ", start);
+  console.log("end :>> ", end);
+  if (start % 3 === 0) {
+    p += "fizz";
+  }
+  if (start % 5 === 0) {
+    p += "buzz";
+  }
+  if (p === "") {
+    p = start;
+  }
+  console.log(p);
+  if (start === end) {
+    return;
+  } else {
+    fizzBuzzRecursive3(start + 1, end);
+  }
+}
+
+console.log(fizzBuzzRecursive3(1, 15));
+
+// fizzbuzz recursion 4 (head)
+function fizzBuzzRecursive4(start: number, end: number) {
+  if (start < end) {
+    console.log("start :>> ", start);
+    console.log("end :>> ", end);
+    fizzBuzzRecursive4(start, end - 1);
+  }
+  console.log("start :>> ", start);
+  console.log("end :>> ", end);
+  let p: string | number = "";
+  if (end % 3 === 0) {
+    p += "fizz";
+  }
+  if (end % 5 === 0) {
+    p += "buzz";
+  }
+  if (p === "") {
+    p = end;
+  }
+  console.log(p);
+}
+console.log(fizzBuzzRecursive4(1, 15));
 
 // now refactor in functional style.
 // Should return array

@@ -1,3 +1,5 @@
+import * as R from "ramda";
+
 const isSilence = (m: string) => {
   // const r = /[\t\n\r]+/.test(m) || m === "";
   const r = /^\s*$/.test(m) || m === "";
@@ -44,7 +46,7 @@ const isAllCaps = (m: string) => {
   });
   return allUppercaseLetters && !allNumbers;
 };
-export function hey(message: string): string {
+export function heyA(message: string): string {
   // throw new Error('Remove this statement and implement this function')
   // regex test input and then choose response from dictionary
 
@@ -77,13 +79,55 @@ export function hey(message: string): string {
   return response;
 }
 
-// const responseDict = {
-//   question: "Sure.",
-//   yell: "Whoa, chill out!",
-//   yellQuestion: "Calm down, I know what I'm doing!",
-//   sayNothing: "Fine. Be that way!",
-//   default: "Whatever.",
-// };
-// const m = "Does this cryogenic chamber make me look fat?";
-// console.log(isAllCaps("Does this cryogenic chamber make me look fat?"));
-// console.log(m.slice(m.length));
+export const hey = (input: string): string => {
+  const answers: string[] = [
+    "Whatever.",
+    "Sure.",
+    "Whoa, chill out!",
+    "Calm down, I know what I'm doing!",
+  ];
+  const speech = input.trim();
+  if (speech == "") return "Fine. Be that way!";
+
+  const isQuestion = speech.endsWith("?") ? 1 : 0;
+  const isShout =
+    /[A-Z]+/.test(speech) && speech == speech.toUpperCase() ? 2 : 0;
+  return answers[isQuestion + isShout];
+};
+// console.log("Okay if like my  spacebar  quite a bit?   ".trim().endsWith("?"));
+
+export function heyC(speech: string): string {
+  if (hearsBoring(speech)) {
+    return "Fine. Be that way!";
+  }
+  if (hearsFreaky(speech)) {
+    return "Whoa, chill out!";
+  }
+  if (hearsInquisitive(speech)) {
+    return "Sure.";
+  }
+  return "Whatever.";
+}
+const hearsBoring = (speech: string): boolean => {
+  return speech.length === 0 || /^\s*$/.test(speech);
+};
+const hearsFreaky = (speech: string): boolean => {
+  return /[A-Z]/.test(speech) && speech === speech.toUpperCase();
+};
+const hearsInquisitive = (speech: string): boolean => {
+  return speech.endsWith("?");
+};
+
+export const heyB = (input: string) => {
+  const isQuestion = R.endsWith("?");
+  const isAllUpper = (s: string) => s === s.toUpperCase();
+  const containsLetters = (s: string) => !!s.match(/[a-z]/i);
+  const isWhitespaceOrEmpty = R.pipe(R.trim, R.isEmpty);
+  const isShouting = R.both(containsLetters, isAllUpper);
+  return R.cond([
+    [isShouting, R.always("Whoa, chill out!")],
+    [isQuestion, R.always("Sure.")],
+    [isWhitespaceOrEmpty, R.always("Fine. Be that way!")],
+    [R.T, R.always("Whatever.")],
+  ])(input);
+};

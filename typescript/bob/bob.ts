@@ -4,13 +4,23 @@ const isSilence = (m: string) => {
   console.log("isSilence = ", r);
   return r;
 };
+const startsWithWhitespace = (m: string) => {
+  // const r = /[\t\n\r]+/.test(m) || m === "";
+  const r = /^\s*$/.test(m);
+  console.log("starts with whitespace = ", r);
+  return r;
+};
 const isQuestionMarkOnEnd = (m: string) => {
-  const r = m.slice(-1) === "?";
+  const firstChars = [...m].filter((char) => /^[a-z0-9?!]/.test(char));
+  const r = firstChars.join("").slice(-1) === "?";
   console.log("isQuestionMarkOnEnd :>> ", r);
   return r;
 };
 const isTherePunctuation = (m: string) => {
-  const r = ["!", "?", "."].includes(m.slice(-1));
+  const firstChars = [...m].filter((char) => /^[a-z0-9?!]/.test(char));
+  const lastChar = firstChars.join("").slice(-1);
+  console.log("firstChars :>> ", lastChar);
+  const r = ["!", "?", "."].includes(lastChar);
   // console.log("isTherePunctuation :>> ", r);
   return r;
 };
@@ -19,7 +29,7 @@ const firstChars = (m: string) =>
   isTherePunctuation(m) ? m.slice(0, m.length - 1) : m;
 
 const isAllCaps = (m: string) => {
-  console.log("firstChars :>> ", firstChars(m));
+  // console.log("firstChars :>> ", firstChars(m));
   const firstCharsArray = Array.from(firstChars(m));
   const allUppercaseLetters = firstCharsArray.every((char) => {
     // console.log("char :>> ", char);
@@ -55,9 +65,7 @@ export function hey(message: string): string {
       console.log("YELL");
       response = "Whoa, chill out!";
       break;
-    case isSilence(message):
-      // !isAllCaps(message) &&
-      // !isQuestionMarkOnEnd(message):
+    case isSilence(message) || startsWithWhitespace(message):
       console.log("silence");
       response = "Fine. Be that way!";
       break;

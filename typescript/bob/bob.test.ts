@@ -91,22 +91,22 @@ describe("Bob", () => {
     expect(result).toEqual("Fine. Be that way!");
   });
 
-  xit("alternate silence", () => {
+  it("alternate silence", () => {
     const result = hey("\t\t\t\t\t\t\t\t\t\t");
     expect(result).toEqual("Fine. Be that way!");
   });
 
-  xit("multiple line question", () => {
+  it("multiple line question", () => {
     const result = hey("\nDoes this cryogenic chamber make me look fat?\nNo.");
     expect(result).toEqual("Whatever.");
   });
 
-  xit("starting with whitespace", () => {
+  it("starting with whitespace", () => {
     const result = hey("         hmmmmmmm...");
     expect(result).toEqual("Whatever.");
   });
 
-  xit("ending with whitespace", () => {
+  it("ending with whitespace", () => {
     const result = hey("Okay if like my  spacebar  quite a bit?   ");
     expect(result).toEqual("Sure.");
   });

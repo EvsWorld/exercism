@@ -14,7 +14,7 @@ function printNums(n: number) {
 
 function fizzBuzzFor(n: number) {
   for (let i = 1; i <= n; i++) {
-    let p = "";
+    let p: string | number = "";
 
     if (i % 3 === 0) {
       // console.log("fiz");
@@ -41,25 +41,42 @@ function fizzBuzz(start: number, end: number) {
     (n) => n + start
   );
   const r = range.map((val, i, a) => {
-    let p = ""; // starting return val
+    let p: string | number = ""; // starting return val
     if (val % 3 === 0) {
       p += "fizz"; // build up ret val
       return p;
     }
     if (val % 5 === 0) {
-      p += "bazz"; // build up ret val
+      p += "buzz"; // build up ret val
       return p;
     }
     return val;
   });
-  // console.log(r);
   return r;
 }
 
-// console.log(fizzBuzz(1, 100));
-const fizzBuzz15 = fizzBuzz(1, 15);
-console.log("fizzBuzz15 :>> ", fizzBuzz15);
+console.log(fizzBuzz(1, 15));
+// const fizzBuzz15 = fizzBuzz(1, 15);
+// console.log("fizzBuzz15 :>> ", fizzBuzz15);
 
 // while fizzbuzz
+function fizzBuzzWhile(n: number) {
+  let i = 1;
+  while (i <= n) {
+    let p: string | number = "";
+    if (i % 3 === 0) {
+      p += "fizz";
+    }
+    if (i % 5 === 0) {
+      p += "buzz";
+    }
+    if (p === "") {
+      p = i;
+    }
+    console.log(p);
+    i++;
+  }
+}
 
+console.log(fizzBuzzWhile(15));
 // recursive fizzbuzz

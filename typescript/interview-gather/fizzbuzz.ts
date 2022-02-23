@@ -60,6 +60,26 @@ function fizzBuzzRecursive(start: number, end: number): (string | number)[] {
 
 console.log(fizzBuzzRecursive(1, 15));
 
+// fizzbuzz recursion 2
+
+function fizzBuzzRecursive2(start: number, end: number) {
+  let p: string | number = "";
+  if (start % 3 === 0) {
+    p += "fizz";
+  }
+  if (start % 5 === 0) {
+    p += "buzz";
+  }
+  if (p === "") {
+    p = start;
+  }
+  console.log(p);
+  if (start < end) {
+    fizzBuzzRecursive2(start + 1, end);
+  }
+}
+console.log(fizzBuzzRecursive2(1, 15));
+
 // now refactor in functional style.
 // Should return array
 function fizzBuzz(start: number, end: number) {

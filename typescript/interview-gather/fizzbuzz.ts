@@ -88,7 +88,7 @@ function fizzBuzzRecursive2(start: number, end: number) {
     fizzBuzzRecursive2(start + 1, end);
   }
 }
-console.log(fizzBuzzRecursive2(1, 15));
+// console.log(fizzBuzzRecursive2(1, 15));
 
 // fizzbuzz recursion 3 (tail)
 function fizzBuzzRecursive3(start: number, end: number) {
@@ -112,7 +112,7 @@ function fizzBuzzRecursive3(start: number, end: number) {
   }
 }
 
-console.log(fizzBuzzRecursive3(1, 15));
+// console.log(fizzBuzzRecursive3(1, 15));
 
 // fizzbuzz recursion 4 (head)
 function fizzBuzzRecursive4(start: number, end: number) {
@@ -135,7 +135,7 @@ function fizzBuzzRecursive4(start: number, end: number) {
   }
   console.log(p);
 }
-console.log(fizzBuzzRecursive4(1, 15));
+// console.log(fizzBuzzRecursive4(1, 15));
 
 // now refactor in functional style.
 // Should return array
@@ -181,4 +181,4 @@ function fizzBuzzWhile(n: number) {
   }
 }
 
-// console.log(fizzBuzzWhile(15));
+console.log(fizzBuzzWhile(15));

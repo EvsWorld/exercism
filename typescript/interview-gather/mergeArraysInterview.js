@@ -1,3 +1,5 @@
+// Live coding interview for TS company
+
 // write a function that combines two arrays
 // objects with the same id should be merged
 const first = [
@@ -43,58 +45,7 @@ const second = [
 ];
 const stringify = (obj) => JSON.stringify(obj, null, 2);
 
-const merge2 = (f, s) => {
-  const allArrays = [...first, ...second];
-  const final = [];
-  allArrays.forEach((e) => {
-    const added = [];
-    let temp = {};
-    if (!added.includes(e.id)) {
-      console.log("not added: e :>> ", e);
-      added.push(e.id);
-      temp = e;
-    } else {
-      console.log(" added: e :>> ", e);
-      temp = { ...temp, e };
-      const found = final.find((o) => o.id == e.id);
-    }
-    console.log("temp :>> ", temp);
-    final.push(temp);
-  });
-  return final;
-};
-// const output = merge2(first, second);
-
-const merge3 = (f, s) => {
-  const allArrays = [...f, ...s];
-  console.log("\nallArrays :>> ", stringify(allArrays, 0, 2));
-  const final = [];
-  const added = [];
-  allArrays.forEach((e, i) => {
-    const slice = allArrays.slice(i + 1);
-    console.log("\nslice :>> ", stringify(slice));
-    const found = slice.find((j) => j.id === e.id);
-
-    if (!added.includes(e.id)) {
-      added.push(e.id);
-      console.log("found :>> ", found);
-      if (found) {
-        // console.log("found :>> ", found);
-        const toPush = { ...e, ...found };
-        final.push(toPush);
-      } else {
-        console.log("not found :>> ", found);
-        final.push(e);
-      }
-    } else {
-    }
-  });
-  return final;
-};
-
-const output = merge3(first, second);
-console.log("output :>> ", JSON.stringify(output, 0, 2));
-
+// my first solution
 const merge = (f, s) => {
   const r = f.map((e) => {
     const obj = s.find((se) => {
@@ -109,4 +60,69 @@ const merge = (f, s) => {
   return r;
 };
 
-merge(first, second);
+// merge(first, second);
+
+// Then they added the requirement that the ids in the two arrays might not be
+// the same
+//  I abandoned this attempt. Doesn't work.
+// const merge2 = (f, s) => {
+//   const allArrays = [...first, ...second];
+//   const final = [];
+//   allArrays.forEach((e) => {
+//     const added = [];
+//     let temp = {};
+//     if (!added.includes(e.id)) {
+//       console.log("not added: e :>> ", e);
+//       added.push(e.id);
+//       temp = e;
+//     } else {
+//       console.log(" added: e :>> ", e);
+//       temp = { ...temp, e };
+//       const found = final.find((o) => o.id == e.id);
+//     }
+//     console.log("temp :>> ", temp);
+//     final.push(temp);
+//   });
+//   return final;
+// };
+
+// Second attempt for solution to none identical arrays requirement
+const merge3 = (f, s) => {
+  const allArrays = [...f, ...s];
+  const final = [];
+  const added = [];
+  allArrays.forEach((e, i) => {
+    if (!added.includes(e.id)) {
+      const slice = allArrays.slice(i + 1);
+      const found = slice.find((j) => j.id === e.id);
+      added.push(e.id);
+      if (found) {
+        const toPush = { ...e, ...found };
+        final.push(toPush);
+      } else {
+        final.push(e);
+      }
+    }
+  });
+  return final;
+};
+
+// After the interview I found this on stackoverflow
+const merge4 = (f, s) => {
+  const result = Object.values(
+    [...f, ...s].reduce((result, { id, ...rest }) => {
+      result[id] = {
+        ...(result[id] || {}),
+        id,
+        ...rest,
+      };
+      return result;
+    }, {})
+  );
+
+  // console.log(JSON.stringify(result, null, 2));
+  return result;
+};
+
+const output = merge3(first, second);
+console.log("output :>> ", JSON.stringify(output, 0, 2));

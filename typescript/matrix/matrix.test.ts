@@ -38,6 +38,11 @@ describe("Matrix", () => {
     );
   });
 
+  it.only("can extract column from non-square matrix", () => {
+    const expected = [3, 6, 9, 6];
+    expect(new Matrix("1 2 3 4\n5 6 7 8").columns[2]).toEqual(expected);
+  });
+
   it("extract column where numbers have different widths", () => {
     const expected = [1903, 3, 4];
     expect(new Matrix("89 1903 3\n18 3 1\n9 4 800").columns[1]).toEqual(

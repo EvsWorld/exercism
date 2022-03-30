@@ -1,3 +1,16 @@
+function is_unique(str: string) {
+  var obj = {};
+  for (var z = 0; z < str.length; ++z) {
+    var ch = str[z];
+    if (obj[ch]) return false;
+    obj[ch] = true;
+  }
+  return true;
+}
+
+console.log(is_unique("abcdefgh")); // true
+console.log(is_unique("aa")); // false
+
 function hasIdenticalSetOfUniqueCharacters(a: string, b: string): boolean {
   const uniqueA = [...new Set(a)];
 

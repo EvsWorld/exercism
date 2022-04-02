@@ -29,33 +29,30 @@ export function incrementArray(arr: number[]) {
 }
 
 export function incrementArrayFor(arr: number[]) {
+  const r: number[] = [];
+  let hasIncremented: boolean = false;
   for (let i = arr.length - 1; i >= 0; i--) {
-    // console.log("iterating..", arr[i]);
-
     if (arr[i] === 9) {
-      arr[i] = 0;
-      console.log("\n*Got a 9! arr[i] = 0 :>> ", arr[i]);
+      if (i !== 0) {
+        // and if not the first index, put 0 on front
+        r.unshift(0);
+      } else {
+        // if 9 and is the first index set that index to 1, put 0 then 1 on front
+        r.unshift(0);
+        r.unshift(1);
+      }
     } else {
-      arr[i] += 1;
-      console.log("\n*Not a 9 arr[i] +=1 :>> ", arr[i]);
-      return arr;
+      // if not a 9, then just increment current index and set to r
+      if (!hasIncremented) {
+        hasIncremented = true;
+        r.unshift(arr[i] + 1);
+      } else {
+        r.unshift(arr[i]);
+      }
     }
+    // console.log("r :>> ", r);
   }
-}
-
-export function incrementArrayFor2(arr: number[]) {
-  for (let i = 0; i < arr.length; i++) {
-    console.log("iterating..", arr[i]);
-
-    if (arr[i] === 9) {
-      arr[i] = 0;
-      console.log("\n*Got a 9! arr[i] = 0 :>> ", arr[i]);
-    } else {
-      arr[i] += 1;
-      console.log("\n*Not a 9 arr[i] +=1 :>> ", arr[i]);
-      return arr;
-    }
-  }
+  return r;
 }
 
 // experiment
@@ -86,9 +83,9 @@ export function filterInPlace(
   a.length = j;
   return a;
 }
-console.log(
-  filterInPlace([1, 2, 3, 4, "apple", 5, 6, 7, 8, 9], betweenFiveAndTwo)
-);
+// console.log(
+//   filterInPlace([1, 2, 3, 4, "apple", 5, 6, 7, 8, 9], betweenFiveAndTwo)
+// );
 
 // experiment
 export function count<T>(source: T[], predicate: (x: T) => boolean): number {
@@ -109,10 +106,10 @@ function calculatePercentageGreaterThanFive(answers: number[]): number {
   return Math.round((count(answers, (x) => x > 5) / answers.length) * 100);
 }
 
-console.log(
-  calculatePercentage([true, true, false, false, true, true, true, true])
-);
-console.log(calculatePercentageGreaterThanFive([6, 1, 1, 1, 1, 1, 1, 1, 2, 2]));
+// console.log(
+//   calculatePercentage([true, true, false, false, true, true, true, true])
+// );
+// console.log(calculatePercentageGreaterThanFive([6, 1, 1, 1, 1, 1, 1, 1, 2, 2]));
 
 // experiment with generic types
 // NOTE: so the <T> at the beginning of the function is just simply replaced.
@@ -144,38 +141,38 @@ export function addOrReplace<T>(
   return result;
 }
 
-console.log(addOrReplace([1, 2, 3, 4, 5, 6, 7], 100, (x) => x === 6));
-console.log(
-  addOrReplace(["red", "green", "blue"], "rainbo", (x) => x === "blue")
-);
+// console.log(addOrReplace([1, 2, 3, 4, 5, 6, 7], 100, (x) => x === 6));
+// console.log(
+//   addOrReplace(["red", "green", "blue"], "rainbo", (x) => x === "blue")
+// );
 
 // computed properties used to make mapped type
 type ColorKeys = "color" | "description" | "texture";
 type ColorObject = {
   [key in ColorKeys]: string;
 };
-console.log(
-  addOrReplace<ColorObject>(
-    [
-      { color: "blue", description: "like the sky", texture: "velvety" },
-      { color: "red", description: "like a firetruck", texture: "hardish" },
-    ],
-    { color: "purple", description: "red", texture: "scratchy" },
-    (x) => x.color === "red"
-  )
-);
+// console.log(
+//   addOrReplace<ColorObject>(
+//     [
+//       { color: "blue", description: "like the sky", texture: "velvety" },
+//       { color: "red", description: "like a firetruck", texture: "hardish" },
+//     ],
+//     { color: "purple", description: "red", texture: "scratchy" },
+//     (x) => x.color === "red"
+//   )
+// );
 
 // experiment with sets
 
 function showSet<T>(s: T[]) {
   const set1 = new Set(s);
   set1.clear;
-  console.log("set1 :>> ", set1);
-  console.log("set1.size :>> ", set1.size);
+  // console.log("set1 :>> ", set1);
+  // console.log("set1.size :>> ", set1.size);
   return [...set1];
   // return Array.from(set1); // may have to do this with typescript
 }
-console.log(showSet([1, 2, 2, 2, 2, 2, 3, 4, 5, 6, 7]));
+// console.log(showSet([1, 2, 2, 2, 2, 2, 3, 4, 5, 6, 7]));
 
 // experiment with Omit and remove functions
 export function omit<T extends Object, K extends keyof T>(

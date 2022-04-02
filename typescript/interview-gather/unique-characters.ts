@@ -1,43 +1,47 @@
-function is_unique(str: string) {
-  var obj = {};
+// checks if string has unique values
+export function isUnique(str: string) {
+  var obj: { [key: string]: boolean } = {};
   for (var z = 0; z < str.length; ++z) {
     var ch = str[z];
     if (obj[ch]) return false;
     obj[ch] = true;
   }
+  // console.log("obj :>> ", obj);
   return true;
 }
 
-console.log(is_unique("abcdefgh")); // true
-console.log(is_unique("aa")); // false
-
-function hasIdenticalSetOfUniqueCharacters(a: string, b: string): boolean {
+export function hasIdenticalSetOfUniqueCharactersLong(
+  a: string,
+  b: string
+): boolean {
+  // Make array of unique vals
   const uniqueA = [...new Set(a)];
-
   const uniqueB = [...new Set(b)];
 
   const aString = uniqueA.sort().join(",").toLowerCase();
   const bString = uniqueB.sort().join(",").toLowerCase();
+
   return aString === bString;
-  console.log("uniqueA: ", uniqueA);
 }
 
-function hasIdenticalSetOfUniqueCharacters2(a: string, b: string): boolean {
-  const A = new Set(a);
-  const B = new Set(b);
-  for (let value of A.values()) {
-    if (!B.has(value)) return false;
+export function hasIdenticalSetOfUniqueCharactersOnePass(
+  a: string,
+  b: string
+): boolean {
+  const UniqueSetA = new Set(a);
+  const UniqueSetB = new Set(b);
+  // console.log("UniqueSetA :>> ", UniqueSetA);
+  // console.log("UniqueSetB :>> ", UniqueSetB);
+
+  // short circit if any of UniqueSetA are not found in UniqueSetB
+  for (let value of UniqueSetA.values()) {
+    if (!UniqueSetB.has(value)) return false;
   }
 
-  for (let value of B.values()) {
-    if (!A.has(value)) return false;
+  // short circit if any of UniqueSetB are not found in UniqueSetA
+  for (let value of UniqueSetB.values()) {
+    if (!UniqueSetA.has(value)) return false;
   }
+  // if hasnt exited up to here then they were all found
   return true;
 }
-console.log(hasIdenticalSetOfUniqueCharacters("aaaabcccccdefg", "abcdefggggg"));
-console.log(hasIdenticalSetOfUniqueCharacters("cccccdefg", "abcdefggggg"));
-
-console.log(
-  hasIdenticalSetOfUniqueCharacters2("aaaabcccccdefg", "abcdefggggg")
-);
-console.log(hasIdenticalSetOfUniqueCharacters2("cccccdefg", "abcdefggggg"));

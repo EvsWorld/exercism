@@ -6,7 +6,7 @@
  *
  * @return {Array<number>} [Index, Index]
  */
-function maxProfit(prices: number[]) {
+export function maxProfit(prices: number[]) {
   let minSoFar: number = 0;
   let minSoFarIndex: number = 0;
   let maxProfitSoFar: number = 0;

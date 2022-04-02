@@ -1,6 +1,6 @@
 // print out number 1 -> n
 
-function printNums(n: number) {
+export function printNums(n: number) {
   for (let i = 1; i <= n; i++) {
     console.log(i);
   }

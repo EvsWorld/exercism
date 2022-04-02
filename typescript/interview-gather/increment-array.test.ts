@@ -25,14 +25,14 @@ xdescribe("Increment array solution 1 ", () => {
   });
 });
 
-describe("Increment array solution with for loop ", () => {
-  it.only("[1,2,3]", () => {
+xdescribe("Increment array solution with for loop ", () => {
+  it("[1,2,3]", () => {
     expect(incrementArrayFor2([1, 2, 3])).toEqual([1, 2, 4]);
   });
   it("[1,2,3,9]", () => {
     expect(incrementArrayFor2([1, 2, 3, 9])).toEqual([1, 2, 4, 0]);
   });
-  it.only("[9,9,9]", () => {
+  it("[9,9,9]", () => {
     expect(incrementArrayFor2([9, 9, 9])).toEqual([1, 0, 0, 0]);
   });
 });

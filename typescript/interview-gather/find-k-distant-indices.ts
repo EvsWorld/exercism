@@ -62,17 +62,19 @@ export function findKDistantIndices(nums: number[], key: number, k: number) {
     if (nums[j] === key) {
       console.log("\nj :>> ", j);
       for (let [i, num] of nums.entries()) {
-        // console.log("num :>> ", num);
-        // const distance = Math.abs(i - k);
-        // dict[distance] = i;
-        if (Math.abs(i - j) <= k) {
-          res.push(i);
+        const distance = Math.abs(i - k);
+        // if (dict[distance] !== undefined) {
+        //   res.push(i);
+        // }
+        if (distance <= j) {
+          dict[distance] = i;
+          // res.push(i);
         }
       }
     }
   }
   console.log("dict :>> ", dict);
-  const resUnique = [...new Set(res)];
-  console.log("resUnique :>> ", resUnique);
-  return resUnique;
+  const dictValues = Object.values(dict);
+  console.log("dictValues :>> ", dictValues);
+  return dictValues;
 }

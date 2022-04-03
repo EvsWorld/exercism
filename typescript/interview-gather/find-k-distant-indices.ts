@@ -16,6 +16,62 @@ import { match } from "assert/strict";
 // 	  -6: 3
 // }
 
+// best solution found
+export function findKDistantIndices(nums: number[], key: number, k: number) {
+  let obj: { [key: number]: number } = {};
+  for (let i = 0; i < nums.length; i++) {
+    if (nums[i] === key) {
+      let start = Math.max(0, i - k);
+      let end = Math.min(nums.length - 1, i + k);
+      // console.log("start :>> ", start);
+      for (let j = start; j <= end; j++) {
+        // console.log("j :>> ", j);
+        obj[j] = 1;
+        console.log("obj :>> ", obj);
+      }
+    }
+  }
+  // console.log("obj :>> ", obj);
+  return Object.keys(obj).map((n) => Number(n));
+}
+
+export function findKDistantIndicesHash(
+  nums: number[],
+  key: number,
+  k: number
+) {
+  const ans: number[] = [];
+  const fre: { [key: number]: number } = {};
+  // make bottom hashmap with length 1 greater
+  for (let i = 0; i < nums.length; i++) {
+    if (nums[i] === key) {
+      let left = Math.max(0, i - k);
+      let right = Math.min(nums.length, i + k + 1);
+      console.log("left :>> ", left);
+      console.log("right :>> ", right);
+      if (fre[left] === undefined) {
+        fre[left] = 1;
+      } else {
+        fre[left] = fre[left] + 1;
+      }
+      if (fre[right] === undefined) {
+        fre[right] === -1;
+      } else {
+        fre[right] = fre[right] - 1;
+      }
+    }
+    console.log("fre :>> ", fre);
+  }
+
+  let cumm: number = 0;
+  for (let i = 0; i < nums.length; i++) {
+    cumm += fre[i];
+    if (cumm > 0) ans.push(i);
+  }
+  console.log("ans :>> ", ans);
+  return ans;
+}
+
 function getAllIndexes(arr: number[], val: number) {
   var indexes = [],
     i;
@@ -53,8 +109,53 @@ export function findKDistantIndices1(nums: number[], key: number, k: number) {
   console.log("r :>> ", r);
 }
 
+// doesnt work
+export function findKDistantIndicesDecrement(
+  nums: number[],
+  key: number,
+  k: number
+) {
+  const res: number[] = [];
+  const dict: { [key: number]: number } = {};
+  let count: number = 0;
+
+  for (let j = 0; j < nums.length; j++) {
+    if (nums[j] === key) {
+      // if matches key, increment k by 1?
+      count = k + 1;
+      if (count > 0) {
+        res.push(j);
+      }
+      console.log("first loop: res :>> ", res);
+      console.log("first loop before decrement: count :>> ", count);
+      count -= 1;
+      console.log("first loop after decrement: count :>> ", count);
+    }
+  }
+  console.log("after for loop: count :>> ", count);
+  count = 0;
+  console.log("after first loop: res :>> ", res);
+  for (let i = nums.length - 1; i >= 0; i--) {
+    if (nums[i] == key) {
+      count = k + 1;
+    }
+    if (count > 0) {
+      res.push(i);
+    }
+    count -= 1;
+    console.log(" count :>> ", count);
+  }
+  console.log("res :>> ", res);
+  console.log("after second for loop: count :>> ", count);
+  return res;
+}
+
 // this is inefficient. need to use hash table somehow
-export function findKDistantIndices(nums: number[], key: number, k: number) {
+export function findKDistantIndicesLoop(
+  nums: number[],
+  key: number,
+  k: number
+) {
   const res: number[] = [];
   const dict: { [key: number]: number } = {};
 
@@ -78,3 +179,4 @@ export function findKDistantIndices(nums: number[], key: number, k: number) {
   console.log("dictValues :>> ", dictValues);
   return dictValues;
 }
+findKDistantIndices([3, 4, 9, 1, 3, 9, 5], 9, 1);

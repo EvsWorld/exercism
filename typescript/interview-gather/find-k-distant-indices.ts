@@ -20,21 +20,62 @@ import { match } from "assert/strict";
 export function findKDistantIndices(nums: number[], key: number, k: number) {
   let obj: { [key: number]: number } = {};
   for (let i = 0; i < nums.length; i++) {
+    // for the instances of 'key'...
     if (nums[i] === key) {
+      // find start (k distance behind i)
+      // find the bigger value between first index (0) or i - k
       let start = Math.max(0, i - k);
+      // find end (k distance in front of i)
+      // find lesser value between end index or i + k
       let end = Math.min(nums.length - 1, i + k);
-      // console.log("start :>> ", start);
+
+      // loop over from start to end and print ones
+      // this is saving all the possible indexes,
+      // and it does this loop for each 'key',
+      // this eliminates saving duplicate indices
       for (let j = start; j <= end; j++) {
-        // console.log("j :>> ", j);
         obj[j] = 1;
-        console.log("obj :>> ", obj);
+        console.log("obj after :>> ", obj);
       }
     }
   }
-  // console.log("obj :>> ", obj);
+  // NOTE: its way faster without this extra loop to change the keys to numbers
   return Object.keys(obj).map((n) => Number(n));
 }
 
+// findKDistantIndices([3, 4, 9, 1, 3, 9, 5], 9, 1);
+
+// this is inefficient. need to use hash table somehow
+export function findKDistantIndicesSlowLoops(
+  nums: number[],
+  key: number,
+  k: number
+): number[] {
+  function getAllIndexes(arr: number[], val: number) {
+    var indexes = [],
+      i;
+    for (i = 0; i < arr.length; i++) if (arr[i] === val) indexes.push(i);
+    return indexes;
+  }
+
+  const res: number[] = [];
+  const keyIndices = getAllIndexes(nums, key);
+  for (let [index, j] of keyIndices.entries()) {
+    console.log("\nj :>> ", j);
+    for (let [i, num] of nums.entries()) {
+      // console.log("num :>> ", num);
+      if (Math.abs(i - j) <= k) {
+        res.push(i);
+      }
+    }
+  }
+  const resUnique = [...new Set(res)];
+  console.log("resUnique :>> ", resUnique);
+  return resUnique;
+}
+// *** All below here don't work ******
+
+// Doesnt work
 export function findKDistantIndicesHash(
   nums: number[],
   key: number,
@@ -149,34 +190,3 @@ export function findKDistantIndicesDecrement(
   console.log("after second for loop: count :>> ", count);
   return res;
 }
-
-// this is inefficient. need to use hash table somehow
-export function findKDistantIndicesLoop(
-  nums: number[],
-  key: number,
-  k: number
-) {
-  const res: number[] = [];
-  const dict: { [key: number]: number } = {};
-
-  for (let j = 0; j < nums.length; j++) {
-    if (nums[j] === key) {
-      console.log("\nj :>> ", j);
-      for (let [i, num] of nums.entries()) {
-        const distance = Math.abs(i - k);
-        // if (dict[distance] !== undefined) {
-        //   res.push(i);
-        // }
-        if (distance <= j) {
-          dict[distance] = i;
-          // res.push(i);
-        }
-      }
-    }
-  }
-  console.log("dict :>> ", dict);
-  const dictValues = Object.values(dict);
-  console.log("dictValues :>> ", dictValues);
-  return dictValues;
-}
-findKDistantIndices([3, 4, 9, 1, 3, 9, 5], 9, 1);

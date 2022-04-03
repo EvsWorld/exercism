@@ -6,7 +6,7 @@
  *
  * @return {Array<number>} [Index, Index]
  */
-export function maxProfit(prices: number[]) {
+export function buySellIndices(prices: number[]) {
   let minSoFar: number = 0;
   let minSoFarIndex: number = 0;
   let maxProfitSoFar: number = 0;
@@ -32,4 +32,13 @@ export function maxProfit(prices: number[]) {
   });
   return [buyIndex, sellIndex];
 }
-console.log(maxProfit([5, 6, 7, 15, 2, 14]));
+
+export function buySellIndicesAlt(prices: number[]) {
+  let indices: number[] = [];
+
+  return indices;
+}
+
+export function maxProfit(prices: number[]) {}
+
+console.log(buySellIndicesAlt([5, 6, 7, 15, 2, 14]));

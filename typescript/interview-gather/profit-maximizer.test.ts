@@ -5,7 +5,7 @@ import {
 } from "./profit-maximizer";
 
 describe("returns indices for buy ans sell", () => {
-  it("1", () => {
+  it.only("1", () => {
     expect(buySellIndices([5, 6, 7, 15, 2, 14])).toEqual([0, 3]);
   });
 });

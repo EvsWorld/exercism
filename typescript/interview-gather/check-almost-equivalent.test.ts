@@ -10,4 +10,7 @@ describe("check if two strings almost equivalent", () => {
   it.only("ARE equivalent", () => {
     expect(checkAlmostEquivalent("cccddabba", "babababab")).toEqual(true);
   });
+  it.only("are NOT equivalent", () => {
+    expect(checkAlmostEquivalent("zzzyyy", "iiiiii")).toEqual(false);
+  });
 });

@@ -27,15 +27,13 @@ export function checkAlmostEquivalent(word1: string, word2: string): boolean {
 
   for (let i = 0; i < word1.length; i++) {
     let ltr: string = word1[i];
-    // console.log("ltr :>> ", ltr);
     // if ltr exists on map, increment it
     if (wMap1.has(ltr)) {
-      // console.log("wMap1.has(ltr) :>> ", wMap1.has(ltr));
       const num = wMap1.get(ltr);
       // ? how to fix ts error that object is possibly undefined
       wMap1.set(ltr, num! + 1);
     } else {
-      // if doesnt exist, create it
+      // if doesnt exist, create it and increment
       wMap1.set(ltr, 1);
     }
   }
@@ -44,49 +42,28 @@ export function checkAlmostEquivalent(word1: string, word2: string): boolean {
   // loop over second word checking for this ltr and incrementing or decrementing wMap
   for (let j = 0; j < word2.length; j++) {
     const ltr = word2[j];
-    // console.log("ltr :>> ", ltr);
-    // if ltr exists on map, increment it
+    // if ltr exists on map, decrement it
     if (wMap1.has(ltr)) {
-      // console.log("wMap2.has(ltr2) :>> ", wMap2.has(ltr));
       const num = wMap1!.get(ltr);
       // ? how to fix ts error that object is possibly undefined
       wMap1.set(ltr, num! - 1);
     } else {
-      // if doesnt exist, create it
-      wMap1.set(ltr, 1);
+      // if doesnt exist, create it and decrement
+      wMap1.set(ltr, -1);
     }
   }
 
   console.log("wMap1 :>> ", wMap1);
   // check if wMap1 has any value abs val greater than 3
   for (const entry of wMap1.entries()) {
-    console.log("entry :>> ", entry);
-    console.log("Math.abs(entry[1]) :>> ", Math.abs(entry[1]));
+    // console.log("entry :>> ", entry);
+    // console.log("Math.abs(entry[1]) :>> ", Math.abs(entry[1]));
     const isGreater = Math.abs(entry[1]) > 3;
 
     if (isGreater) {
-      console.log("greater :>> ", isGreater);
       return false;
     }
   }
 
   return true;
-  // for (const entry of wMap1.entries()) {
-  //   // console.log("entry = ", entry);
-  //   console.log("entry[1] :>> ", entry[1]);
-  //   const other = wMap2.get(entry[0]);
-  //   console.log("other :>> ", other);
-  //   const otherVal = other ? other : 0;
-
-  //   const diff = Math.abs(entry[1] - otherVal);
-  //   console.log("diff :>> ", diff);
-  //   const diffGreater = diff > 3;
-  //   // if (wMap2.has(entry[0])) {
-  //   console.log("diffGreater :>> ", diffGreater);
-  //   if (diffGreater) {
-  //     console.log("diffGreater :>> ", diffGreater);
-  //     return false;
-  //   }
-  // }
-  // }
 }

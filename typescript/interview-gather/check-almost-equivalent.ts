@@ -27,10 +27,10 @@ export function checkAlmostEquivalent(word1: string, word2: string): boolean {
 
   for (let i = 0; i < word1.length; i++) {
     let ltr: string = word1[i];
-    console.log("ltr :>> ", ltr);
+    // console.log("ltr :>> ", ltr);
     // if ltr exists on map, increment it
     if (wMap1.has(ltr)) {
-      console.log("wMap1.has(ltr) :>> ", wMap1.has(ltr));
+      // console.log("wMap1.has(ltr) :>> ", wMap1.has(ltr));
       const num = wMap1.get(ltr);
       // ? how to fix ts error that object is possibly undefined
       wMap1.set(ltr, num! + 1);
@@ -42,10 +42,10 @@ export function checkAlmostEquivalent(word1: string, word2: string): boolean {
   // loop over second word checking for this ltr and adding to another map
   for (let j = 0; j < word2.length; j++) {
     const ltr = word2[j];
-    console.log("ltr :>> ", ltr);
+    // console.log("ltr :>> ", ltr);
     // if ltr exists on map, increment it
     if (wMap2.has(ltr)) {
-      console.log("wMap2.has(ltr2) :>> ", wMap2.has(ltr));
+      // console.log("wMap2.has(ltr2) :>> ", wMap2.has(ltr));
       const num = wMap2!.get(ltr);
       // ? how to fix ts error that object is possibly undefined
       wMap2.set(ltr, num! + 1);
@@ -54,8 +54,23 @@ export function checkAlmostEquivalent(word1: string, word2: string): boolean {
       wMap2.set(ltr, 1);
     }
   }
-  // for (const ltr of wMap1.keys())
+  for (const entry of wMap1.entries()) {
+    console.log("entry = ", entry);
+    const other = wMap2.get(entry[0]);
+    // console.log("other :>> ", other);
+    const otherVal = other ? other : 0;
+    const diff = Math.abs(entry[1] - otherVal);
+    console.log("diff :>> ", diff);
+    const diffGreater = diff > 3;
+    // if (wMap2.has(entry[0])) {
+    console.log("diffGreater :>> ", diffGreater);
+    if (diffGreater) {
+      console.log("diffGreater :>> ", diffGreater);
+      return false;
+    }
+    // }
+  }
   console.log("wMap1 :>> ", wMap1);
   console.log("wMap2 :>> ", wMap2);
-  return eq;
+  return true;
 }

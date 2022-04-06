@@ -77,7 +77,7 @@ const getScoreFromRule = (rule: Rule, contribution: number): number => {
       score = maxScore;
       console.log("Using maxThreshold.  Score = ", score);
     } else {
-      // assign score based on linear scale
+      // assign score with linear interpolation
       score =
         minScore +
         ((contribution - minThreshold) * (maxScore - minScore)) /
@@ -100,19 +100,11 @@ const getRuleForSource = (source: Source) => {
   // const categoryRule = rulesByCategory[source.category];
   // const entityRule = rulesByEntity[source.name];
   const categoryRule = rulesArray.find((rule) => {
-    if (rule.categories) {
-      return rule.categories.includes(source.category);
-    } else {
-      return false;
-    }
+    return rule.categories ? rule.categories.includes(source.category) : false;
   });
 
   const entityRule = rulesArray.find((rule) => {
-    if (rule.entities) {
-      return rule.entities.includes(source.name);
-    } else {
-      return false;
-    }
+    return rule.entities ? rule.entities.includes(source.name) : false;
   });
   console.log("categoryRule :>> ", categoryRule);
   console.log("entityRule :>> ", entityRule);
@@ -122,8 +114,9 @@ const getRuleForSource = (source: Source) => {
   return mergedRules;
 };
 
-// *************************** Solution *********************************** Each
-// rule is evaluated only if funds have been contributed from matching
+// *************************** Solution ***********************************
+
+// Each rule is evaluated only if funds have been contributed from matching
 // categories/entities. Business logic for multiple matching rules is
 // *unspecified*
 //

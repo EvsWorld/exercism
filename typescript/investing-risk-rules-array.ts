@@ -133,12 +133,20 @@ const getRuleForSource = (entity: Entity) => {
   // iterate over rulesArray to get categoryRule or entityRule
   // const categoryRule = rulesByCategory[category];
   const categoryRule = rulesArray.find((rule) => {
-    return rule.categories.includes(entity.category);
+    if (rule.categories) {
+      return rule.categories.includes(entity.category);
+    } else {
+      return false;
+    }
   });
 
   // const entityRule = rulesByEntity[entity.name];
   const entityRule = rulesArray.find((rule) => {
-    return rule.entities.includes(entity.name);
+    if (rule.entities) {
+      return rule.entities.includes(entity.name);
+    } else {
+      return false;
+    }
   });
   console.log("categoryRule :>> ", categoryRule);
   console.log("entityRule :>> ", entityRule);
@@ -177,8 +185,12 @@ export const investingRisk = (transactionAnalysis: TransactionAnalysis) => {
   //
   let totalScore: number = 0;
   completeTransactionAnalysis.forEach((source) => {
-    const entityRule = getRuleForSource(source);
+    const effectiveRuleForSource = getRuleForSource(source);
+    // get score
+    const score = getScoreFromRule(effectiveRuleForSource, source.contribution);
+    totalScore += score;
   });
+  return totalScore;
 };
 
 console.log(investingRisk(transactionAnalysis));

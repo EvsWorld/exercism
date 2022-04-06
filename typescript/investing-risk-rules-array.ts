@@ -3,23 +3,6 @@
 // the percentages dont add up to 100
 
 // ************************** Types And Data *****************************
-// unused
-const rulesArray: Rule[] = [
-  {
-    minThreshold: 46,
-    minScore: 56,
-    maxThreshold: 84,
-    maxScore: 1,
-    entities: ["Agora", "Nucleus Market", "Entity2"],
-  },
-  {
-    minThreshold: 69,
-    minScore: 2,
-    maxThreshold: 88,
-    maxScore: 13,
-    categories: ["Dark Market", "Another Category", "Some Category"],
-  },
-];
 
 type Rule = {
   minThreshold: number;
@@ -30,7 +13,7 @@ type Rule = {
   categories?: string[];
 };
 
-type Entity = { name: string; contribution: number };
+type Entity = { name: string; contribution: number; category?: string };
 
 type TransactionAnalysis = Entity[];
 
@@ -48,6 +31,28 @@ const categoriesAndEntities: { [category: string]: string[] } = {
   "Category B": ["Entity2", "Entity3"],
 };
 
+const rulesArray: Rule[] = [
+  {
+    minThreshold: 46,
+    minScore: 56,
+    maxThreshold: 84,
+    maxScore: 1,
+    entities: ["Agora", "Nucleus Market", "Entity2"],
+  },
+  {
+    minThreshold: 69,
+    minScore: 2,
+    maxThreshold: 88,
+    maxScore: 13,
+    categories: ["Dark Market", "Another Category", "Some Category"],
+  },
+  {
+    minThreshold: 37,
+    minScore: 4,
+    maxThreshold: 58,
+    maxScore: 19,
+  },
+];
 // ******************************** Functions *****************************
 
 // Calculate rules by linear percentage contribution, and done as follows: If
@@ -120,46 +125,75 @@ const getCompleteTransactionAnalysis = (transactionAnalysisLocal) => {
   }, []);
 };
 
-const getRulesForEntity = (entity: Entity) => {
+const getRuleForSource = (entity: Entity) => {
   // TODO: merge rules from category with rules from entity. Market superceeds.
   const categories = getCategory(entity);
   const category = categories[0];
   // const categoryRule = getCategoryRule(categories[0]);
   // iterate over rulesArray to get categoryRule or entityRule
-  const categoryRule = rulesByCategory[category];
-  const entityRule = rulesByEntity[entity.name];
+  // const categoryRule = rulesByCategory[category];
+  const categoryRule = rulesArray.find((rule) => {
+    return rule.categories.includes(entity.category);
+  });
+
+  // const entityRule = rulesByEntity[entity.name];
+  const entityRule = rulesArray.find((rule) => {
+    return rule.entities.includes(entity.name);
+  });
   console.log("categoryRule :>> ", categoryRule);
   console.log("entityRule :>> ", entityRule);
+  // category superceeds bc its last
   const mergedRules = { ...entityRule, ...categoryRule };
   console.log("mergedRules :>> ", mergedRules);
   return mergedRules;
 };
 
-//
-// Each rule is evaluated only if funds have been contributed from matching
+// *************************** Solution *********************************** Each
+// rule is evaluated only if funds have been contributed from matching
 // categories/entities business logic for multiple matching rules is
 // *unspecified*
 //
 // ASSUMPTION:  I think this means that i only need to find one rule set to
 // apply to a given transaction
 //
-// TODO: We are evaluating a transaction analysis. This is a list of entities and their contributions. Each entity will get a score calculated for it.
+// TODO: We are evaluating a transaction analysis. This is a list of entities
+// and their contributions. Each entity will get a score calculated for it.
 export const investingRisk = (transactionAnalysis: TransactionAnalysis) => {
   // ? what to do if there are overlapping rules? which should supercede? Probably the market
 
   const completeTransactionAnalysis =
     getCompleteTransactionAnalysis(transactionAnalysis);
   console.log("completeTransactionAnalysis :>> ", completeTransactionAnalysis);
+
+  // TODO: iterate over complete transaction analysis
+  // *  for each source:
+  //     * find rule(s) because of entity
+  //     * find rule(s) because of category
+  //     * Choose which rule to apply (or how to combine or handle this).
+  //       (Category rules overrides I think.)
+  //     * Calculate score based on rule and contribution
+  //     * Add score to total (for transaction analysis array)
+  //  Done?
+  //
+  let totalScore: number = 0;
+  completeTransactionAnalysis.forEach((source) => {
+    const entityRule = getRuleForSource(source);
+  });
 };
+
 console.log(investingRisk(transactionAnalysis));
 
-const calcScoreByIteratingOverRulesArray = (rulesArrayLocal) => {
+// ****************************** Unused ************************************
+const calcScoreByIteratingOverRulesArray = (
+  rulesArrayLocal,
+  completeTransactionAnalysisLocal
+) => {
   let scoreCount: number = 0;
   rulesArrayLocal.forEach((rule) => {
-    console.log("rule :>> ", rule);
+    // console.log("rule :>> ", rule);
     let contribution: number | null = null;
     // get entity if the rule matched by entity
-    const entityForEntityRule = completeTransactionAnalysis.find((tr) => {
+    const entityForEntityRule = completeTransactionAnalysisLocal.find((tr) => {
       if (rule.entities) {
         return rule.entities.includes(tr.name);
       } else {
@@ -169,13 +203,15 @@ const calcScoreByIteratingOverRulesArray = (rulesArrayLocal) => {
     console.log("entityForEntityRule :>> ", entityForEntityRule);
 
     // get entity if it matches by category
-    const entityForCategoryRule = completeTransactionAnalysis.find((tr) => {
-      if (rule.categories) {
-        return rule.categories.includes(tr.category);
-      } else {
-        return false;
+    const entityForCategoryRule = completeTransactionAnalysisLocal.find(
+      (tr) => {
+        if (rule.categories) {
+          return rule.categories.includes(tr.category);
+        } else {
+          return false;
+        }
       }
-    });
+    );
     console.log("entityForCategoryRule :>> ", entityForCategoryRule);
 
     if (entityForCategoryRule) {

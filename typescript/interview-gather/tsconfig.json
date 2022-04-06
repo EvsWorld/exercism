@@ -14,6 +14,12 @@
     // Ensure that Babel can safely transpile files in the TypeScript project
     "isolatedModules": true
   },
-  "include": ["*", ".meta/*", "unique-characters/unique-characters.ts"],
+  "include": [
+    "*",
+    ".meta/*",
+    "unique-characters/unique-characters.ts",
+    "../investing-risk-challenge/investing-risk.test.ts",
+    "../investing-risk-challenge/investing-risk.ts"
+  ],
   "exclude": ["node_modules"]
 }

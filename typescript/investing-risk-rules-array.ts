@@ -1,7 +1,3 @@
-// list of contributions that describes sources of funds
-// each contribution has entity object associated
-// the percentages dont add up to 100
-
 // ************************** Types And Data *****************************
 
 type Rule = {
@@ -13,11 +9,9 @@ type Rule = {
   categories?: string[];
 };
 
-type Entity = { name: string; contribution: number; category: string };
+type Source = { name: string; contribution: number; category: string };
 
-type TransactionAnalysis = Entity[];
-
-const transactionAnalysisData: TransactionAnalysis = [
+const transactionAnalysisData: Source[] = [
   { name: "Agora", category: "Dark Market", contribution: 45 },
   { name: "Nucleus Market", category: "Dark Market", contribution: 76 },
 ];
@@ -93,7 +87,6 @@ const getScoreFromRule = (rule: Rule, contribution: number): number => {
     }
   } else {
     // TODO: delete this else
-    // dont apply rule
     console.log(
       `Minimum threshold not met for contribution: ${contribution}. Not applying rule`
     );
@@ -102,11 +95,9 @@ const getScoreFromRule = (rule: Rule, contribution: number): number => {
   return score;
 };
 
-const getRuleForSource = (source: Entity) => {
+const getRuleForSource = (source: Source) => {
   // TODO: merge rules from category with rules from entity. Market superceeds.
-  // const categoryRule = getCategoryRule(categories[0]);
-  // iterate over rulesArray to get categoryRule or entityRule
-  // const categoryRule = rulesByCategory[category];
+  // const categoryRule = rulesByCategory[source.category];
   // const entityRule = rulesByEntity[source.name];
   const categoryRule = rulesArray.find((rule) => {
     if (rule.categories) {
@@ -140,8 +131,8 @@ const getRuleForSource = (source: Entity) => {
 // apply to a given transaction
 //
 // TODO: We are evaluating a transaction analysis. This is a list of entities
-// and their contributions. Each entity will get a score calculated for it.
-export const investingRisk = (transactionAnalysis: TransactionAnalysis) => {
+// and their contributions. Each Source will get a score calculated for it.
+export const investingRisk = (transactionAnalysis: Source[]) => {
   // TODO: iterate over complete transaction analysis
   // *  for each source:
   //     * find rule(s) because of entity

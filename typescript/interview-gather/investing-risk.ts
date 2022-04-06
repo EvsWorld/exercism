@@ -16,7 +16,7 @@ const transactionAnalysisData: Source[] = [
   { name: "Nucleus Market", category: "Dark Market", contribution: 76 },
 ];
 
-const rulesArray: Rule[] = [
+const rulesArrayData: Rule[] = [
   {
     minThreshold: 46,
     minScore: 56,
@@ -95,7 +95,7 @@ const getScoreFromRule = (rule: Rule, contribution: number): number => {
   return score;
 };
 
-const getRuleForSource = (source: Source) => {
+const getRuleForSource = (source: Source, rulesArray: Rule[]) => {
   // TODO: merge rules from category with rules from entity. Market superceeds.
   // const categoryRule = rulesByCategory[source.category];
   // const entityRule = rulesByEntity[source.name];
@@ -109,7 +109,16 @@ const getRuleForSource = (source: Source) => {
   console.log("categoryRule :>> ", categoryRule);
   console.log("entityRule :>> ", entityRule);
   // category superceeds bc its last
-  const mergedRules = { ...entityRule, ...categoryRule };
+  // TODO: find better way to guard against possible undefined values
+  const mergedRules: Rule = { ...entityRule!, ...categoryRule! };
+  // const mergedRules: Rule = {
+  //   minThreshold: entityRule?.minThreshold,
+  //   minScore: entityRule?.minScore,
+  //   maxThreshold: entityRule?.maxThreshold,
+  //   maxScore: entityRule?.maxScore,
+  //   entities: entityRule?.entities,
+  //   categories: entityRule?.categories
+  // }
   console.log("mergedRules :>> ", mergedRules);
   return mergedRules;
 };
@@ -125,7 +134,10 @@ const getRuleForSource = (source: Source) => {
 //
 // TODO: We are evaluating a transaction analysis. This is a list of entities
 // and their contributions. Each Source will get a score calculated for it.
-export const investingRisk = (transactionAnalysis: Source[]) => {
+export const investingRisk = (
+  transactionAnalysis: Source[],
+  rulesArray: Rule[]
+) => {
   // TODO: iterate over complete transaction analysis
   // *  for each source:
   //     * find rule(s) because of entity
@@ -138,7 +150,7 @@ export const investingRisk = (transactionAnalysis: Source[]) => {
   //
   let totalScore: number = 0;
   transactionAnalysis.forEach((source) => {
-    const effectiveRuleForSource = getRuleForSource(source);
+    const effectiveRuleForSource = getRuleForSource(source, rulesArray);
     const scoreForSource = getScoreFromRule(
       effectiveRuleForSource,
       source.contribution
@@ -148,4 +160,4 @@ export const investingRisk = (transactionAnalysis: Source[]) => {
   return totalScore;
 };
 
-console.log(investingRisk(transactionAnalysisData));
+console.log(investingRisk(transactionAnalysisData, rulesArrayData));

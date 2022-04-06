@@ -13,23 +13,14 @@ type Rule = {
   categories?: string[];
 };
 
-type Entity = { name: string; contribution: number; category?: string };
+type Entity = { name: string; contribution: number; category: string };
 
 type TransactionAnalysis = Entity[];
 
-interface CompleteTransactionAnalysis extends TransactionAnalysis {
-  category: string;
-}
-const transactionAnalysis: TransactionAnalysis = [
-  { name: "Agora", contribution: 45 },
-  { name: "Nucleus Market", contribution: 76 },
+const transactionAnalysisData: TransactionAnalysis = [
+  { name: "Agora", category: "Dark Market", contribution: 45 },
+  { name: "Nucleus Market", category: "Dark Market", contribution: 76 },
 ];
-
-const categoriesAndEntities: { [category: string]: string[] } = {
-  "Dark Market": ["Agora", "Nucleus Market"],
-  "White Market": ["Coinbase", "Entity1"],
-  "Category B": ["Entity2", "Entity3"],
-};
 
 const rulesArray: Rule[] = [
   {
@@ -86,64 +77,48 @@ const getScoreFromRule = (rule: Rule, contribution: number): number => {
     if (contribution === minThreshold) {
       // apply min score
       score = minScore;
+      console.log("Using minThreshold.  Score = ", score);
     } else if (contribution >= maxThreshold) {
       // apply max score
       score = maxScore;
+      console.log("Using maxThreshold.  Score = ", score);
     } else {
       // assign score based on linear scale
       score =
         minScore +
         ((contribution - minThreshold) * (maxScore - minScore)) /
           (maxThreshold - minThreshold);
+      score = Number(score.toFixed(0));
+      console.log("calculating linear score. Score = ", score);
     }
   } else {
+    // TODO: delete this else
     // dont apply rule
+    console.log(
+      `Minimum threshold not met for contribution: ${contribution}. Not applying rule`
+    );
   }
-  // do what with the score for this rule here? Add it to what?
+  console.log(`Score for contribution: ${contribution} = ${score}`);
   return score;
 };
 
-const getCategory = (entity: Entity) => {
-  const results: string[] = [];
-  for (const category in categoriesAndEntities) {
-    const entitiesArray = categoriesAndEntities[category];
-    // console.log(`${category}: ${categoriesAndEntities[category]}`);
-    if (entitiesArray.includes(entity.name)) {
-      results.push(category);
-    }
-  }
-  return results[0];
-};
-
-// TODO: reduce transactionAnalysis to include the category too
-const getCompleteTransactionAnalysis = (transactionAnalysisLocal) => {
-  return transactionAnalysisLocal.reduce((acc, cur) => {
-    const category = getCategory(cur);
-    const obj = { ...cur, category };
-    acc.push(obj);
-    return acc;
-  }, []);
-};
-
-const getRuleForSource = (entity: Entity) => {
+const getRuleForSource = (source: Entity) => {
   // TODO: merge rules from category with rules from entity. Market superceeds.
-  const categories = getCategory(entity);
-  const category = categories[0];
   // const categoryRule = getCategoryRule(categories[0]);
   // iterate over rulesArray to get categoryRule or entityRule
   // const categoryRule = rulesByCategory[category];
+  // const entityRule = rulesByEntity[source.name];
   const categoryRule = rulesArray.find((rule) => {
     if (rule.categories) {
-      return rule.categories.includes(entity.category);
+      return rule.categories.includes(source.category);
     } else {
       return false;
     }
   });
 
-  // const entityRule = rulesByEntity[entity.name];
   const entityRule = rulesArray.find((rule) => {
     if (rule.entities) {
-      return rule.entities.includes(entity.name);
+      return rule.entities.includes(source.name);
     } else {
       return false;
     }
@@ -158,7 +133,7 @@ const getRuleForSource = (entity: Entity) => {
 
 // *************************** Solution *********************************** Each
 // rule is evaluated only if funds have been contributed from matching
-// categories/entities business logic for multiple matching rules is
+// categories/entities. Business logic for multiple matching rules is
 // *unspecified*
 //
 // ASSUMPTION:  I think this means that i only need to find one rule set to
@@ -167,12 +142,6 @@ const getRuleForSource = (entity: Entity) => {
 // TODO: We are evaluating a transaction analysis. This is a list of entities
 // and their contributions. Each entity will get a score calculated for it.
 export const investingRisk = (transactionAnalysis: TransactionAnalysis) => {
-  // ? what to do if there are overlapping rules? which should supercede? Probably the market
-
-  const completeTransactionAnalysis =
-    getCompleteTransactionAnalysis(transactionAnalysis);
-  console.log("completeTransactionAnalysis :>> ", completeTransactionAnalysis);
-
   // TODO: iterate over complete transaction analysis
   // *  for each source:
   //     * find rule(s) because of entity
@@ -184,58 +153,15 @@ export const investingRisk = (transactionAnalysis: TransactionAnalysis) => {
   //  Done?
   //
   let totalScore: number = 0;
-  completeTransactionAnalysis.forEach((source) => {
+  transactionAnalysis.forEach((source) => {
     const effectiveRuleForSource = getRuleForSource(source);
-    // get score
-    const score = getScoreFromRule(effectiveRuleForSource, source.contribution);
-    totalScore += score;
+    const scoreForSource = getScoreFromRule(
+      effectiveRuleForSource,
+      source.contribution
+    );
+    totalScore += scoreForSource;
   });
   return totalScore;
 };
 
-console.log(investingRisk(transactionAnalysis));
-
-// ****************************** Unused ************************************
-const calcScoreByIteratingOverRulesArray = (
-  rulesArrayLocal,
-  completeTransactionAnalysisLocal
-) => {
-  let scoreCount: number = 0;
-  rulesArrayLocal.forEach((rule) => {
-    // console.log("rule :>> ", rule);
-    let contribution: number | null = null;
-    // get entity if the rule matched by entity
-    const entityForEntityRule = completeTransactionAnalysisLocal.find((tr) => {
-      if (rule.entities) {
-        return rule.entities.includes(tr.name);
-      } else {
-        return false;
-      }
-    });
-    console.log("entityForEntityRule :>> ", entityForEntityRule);
-
-    // get entity if it matches by category
-    const entityForCategoryRule = completeTransactionAnalysisLocal.find(
-      (tr) => {
-        if (rule.categories) {
-          return rule.categories.includes(tr.category);
-        } else {
-          return false;
-        }
-      }
-    );
-    console.log("entityForCategoryRule :>> ", entityForCategoryRule);
-
-    if (entityForCategoryRule) {
-      contribution = entityForCategoryRule.contribution;
-      const score = getScoreFromRule(rule, contribution);
-      scoreCount += score;
-    } else if (entityForEntityRule) {
-      contribution = entityForEntityRule.contribution;
-      const score = getScoreFromRule(rule, contribution);
-      scoreCount += score;
-    }
-    // here choose whether to use the calculate score based on rule for
-    // assign to scoreCount somehow
-  });
-};
+console.log(investingRisk(transactionAnalysisData));

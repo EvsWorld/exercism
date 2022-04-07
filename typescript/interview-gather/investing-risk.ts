@@ -8,20 +8,24 @@ type Rule = {
   entities?: string[];
   categories?: string[];
 };
+interface MergedRules {
+  entityRule: Rule | undefined;
+  categoryRule: Rule | undefined;
+}
 
 type Source = { name: string; contribution: number; category: string };
 
 const transactionAnalysisData: Source[] = [
-  { name: "Agora", category: "Dark Market", contribution: 45 },
+  { name: "Agora", category: "Dark Market", contribution: 72 },
   { name: "Nucleus Market", category: "Dark Market", contribution: 76 },
 ];
 
 const rulesArrayData: Rule[] = [
   {
     minThreshold: 46,
-    minScore: 56,
+    minScore: 3,
     maxThreshold: 84,
-    maxScore: 1,
+    maxScore: 56,
     entities: ["Agora", "Nucleus Market", "Entity2"],
   },
   {
@@ -29,7 +33,7 @@ const rulesArrayData: Rule[] = [
     minScore: 2,
     maxThreshold: 88,
     maxScore: 13,
-    categories: ["Dark Market", "Another Category", "Some Category"],
+    // categories: ["Dark Market", "Another Category", "Some Category"],
   },
   {
     minThreshold: 37,
@@ -63,10 +67,33 @@ const rulesArrayData: Rule[] = [
 // score = minScore + ( (contribution - minThreshold ) * ( maxScore - minScore ) / (maxThreshold - minThreshold) )
 // score =    1     + ( (     50      -     20       ) * (   7      -    1     ) / (     80      -     20      ) )
 
+const getMergedScore = (
+  mergedRules: MergedRules,
+  contribution: number
+): number => {
+  const { entityRule, categoryRule } = mergedRules;
+  let mergedScore = 0;
+  if (entityRule && categoryRule) {
+    const entityScore = getScoreFromRule(entityRule, contribution);
+    const categoryScore = getScoreFromRule(categoryRule, contribution);
+    mergedScore = (entityScore + categoryScore) / 2;
+  } else if (entityRule) {
+    const entityScore = getScoreFromRule(entityRule, contribution);
+    mergedScore = entityScore;
+  } else if (categoryRule) {
+    const categoryScore = getScoreFromRule(categoryRule, contribution);
+    mergedScore = categoryScore;
+  } else {
+    mergedScore = 0;
+  }
+
+  return mergedScore;
+};
+
 const getScoreFromRule = (rule: Rule, contribution: number): number => {
   let score: number = 0;
   const { minThreshold, minScore, maxThreshold, maxScore } = rule;
-  if (contribution > minThreshold) {
+  if (contribution > minThreshold || !rule) {
     // trigger rule
     if (contribution === minThreshold) {
       // apply min score
@@ -110,7 +137,7 @@ const getRuleForSource = (source: Source, rulesArray: Rule[]) => {
   console.log("entityRule :>> ", entityRule);
   // category superceeds bc its last
   // TODO: find better way to guard against possible undefined values
-  const mergedRules: Rule = { ...entityRule!, ...categoryRule! };
+  const mergedRules: MergedRules = { entityRule, categoryRule };
   // const mergedRules: Rule = {
   //   minThreshold: entityRule?.minThreshold,
   //   minScore: entityRule?.minScore,
@@ -150,9 +177,9 @@ export const investingRisk = (
   //
   let totalScore: number = 0;
   transactionAnalysis.forEach((source) => {
-    const effectiveRuleForSource = getRuleForSource(source, rulesArray);
-    const scoreForSource = getScoreFromRule(
-      effectiveRuleForSource,
+    const effectiveRulesForSource = getRuleForSource(source, rulesArray);
+    const scoreForSource = getMergedScore(
+      effectiveRulesForSource,
       source.contribution
     );
     totalScore += scoreForSource;

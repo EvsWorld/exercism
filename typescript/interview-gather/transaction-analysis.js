@@ -131,10 +131,7 @@ const transaction_analyses = {
 };
 
 const getRuleForSource = (source, rulesArray) => {
-  // TODO: merge rules from category with rules from entity. Market superceeds.
-  console.log("source :>> ", source);
   const categoryRule = rulesArray.find((rule) => {
-    console.log("rule :>> ", rule);
     return rule.categories
       ? rule.categories.includes(source.entity.category)
       : false;
@@ -143,18 +140,11 @@ const getRuleForSource = (source, rulesArray) => {
   const entityRule = rulesArray.find((rule) => {
     return rule.entities ? rule.entities.includes(source.entity.name) : false;
   });
-  console.log("categoryRule :>> ", categoryRule);
-  console.log("entityRule :>> ", entityRule);
-  // category superceeds bc its last
-  // TODO: find better way to guard against possible undefined values
   const mergedRules = { entityRule, categoryRule };
-  console.log("mergedRules :>> ", mergedRules);
   return mergedRules;
 };
 
 const getMergedScore = (mergedRules, contribution) => {
-  console.log("contribution :>> ", contribution);
-  console.log("mergedRules :>> ", mergedRules);
   const { entityRule, categoryRule } = mergedRules;
   let mergedScore = 0;
   if (entityRule && categoryRule) {
@@ -166,7 +156,6 @@ const getMergedScore = (mergedRules, contribution) => {
     mergedScore = entityScore;
   } else if (categoryRule) {
     const categoryScore = getScoreFromRule(categoryRule, contribution);
-    console.log("categoryScore :>> ", categoryScore);
     mergedScore = categoryScore;
   } else {
     mergedScore = 0;
@@ -176,11 +165,6 @@ const getMergedScore = (mergedRules, contribution) => {
 };
 
 const getScoreFromRule = (rule, contribution) => {
-  console.log("rule :>> ", rule);
-  console.log(
-    "rule.min_contribution_threshold :>> ",
-    rule.rule_criteria.min_contribution_threshold
-  );
   let score = 0;
   const {
     min_contribution_threshold,
@@ -209,36 +193,25 @@ const getScoreFromRule = (rule, contribution) => {
       console.log("calculating linear score. Score = ", score);
     }
   } else {
-    // TODO: delete this else
     console.log(
       `Minimum threshold not met for contribution: ${contribution}. Not applying rule`
     );
   }
-  console.log(`Score for contribution: ${contribution} = ${score}`);
   return score;
 };
 
 function solution(tx_hash) {
   const analysis = transaction_analyses[tx_hash];
-  // console.log("analysis :>> ", JSON.stringify(analysis, null, 2));
-  // console.log(
-  //   "contributions :>> ",
-  //   JSON.stringify(analysis.contributions, null, 2)
-  // );
   let calculated_score = 0;
   analysis.contributions.forEach((source) => {
-    console.log("source :>> ", source);
     const effectiveRulesForSource = getRuleForSource(source, rules);
-    console.log("effectiveRulesForSource :>> ", effectiveRulesForSource);
     const scoreForSource = getMergedScore(
       effectiveRulesForSource,
       source.pct_contribution
     );
-    console.log("scoreForSource :>> ", scoreForSource);
     calculated_score += scoreForSource;
   });
-  // Implement your solution here
-  console.log("calculated_score :>> ", calculated_score);
   return calculated_score;
 }
-solution("cfa052bed0e8376ba4daf2cbaadf2cfe8104dc6fc56658dc8cba24e077263792");
+// solution("cfa052bed0e8376ba4daf2cbaadf2cfe8104dc6fc56658dc8cba24e077263792");
+solution("efc08a551c9cd52b682ed7dc092b2b0f252136d4120434994b94394c31d5d174");

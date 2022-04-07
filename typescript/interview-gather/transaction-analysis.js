@@ -153,6 +153,8 @@ const getRuleForSource = (source, rulesArray) => {
 };
 
 const getMergedScore = (mergedRules, contribution) => {
+  console.log("contribution :>> ", contribution);
+  console.log("mergedRules :>> ", mergedRules);
   const { entityRule, categoryRule } = mergedRules;
   let mergedScore = 0;
   if (entityRule && categoryRule) {
@@ -164,6 +166,7 @@ const getMergedScore = (mergedRules, contribution) => {
     mergedScore = entityScore;
   } else if (categoryRule) {
     const categoryScore = getScoreFromRule(categoryRule, contribution);
+    console.log("categoryScore :>> ", categoryScore);
     mergedScore = categoryScore;
   } else {
     mergedScore = 0;
@@ -173,24 +176,35 @@ const getMergedScore = (mergedRules, contribution) => {
 };
 
 const getScoreFromRule = (rule, contribution) => {
+  console.log("rule :>> ", rule);
+  console.log(
+    "rule.min_contribution_threshold :>> ",
+    rule.rule_criteria.min_contribution_threshold
+  );
   let score = 0;
-  const { minThreshold, minScore, maxThreshold, maxScore } = rule;
-  if (contribution > minThreshold || !rule) {
+  const {
+    min_contribution_threshold,
+    min_score,
+    max_contribution_threshold,
+    max_score,
+  } = rule.rule_criteria;
+  if (contribution > min_contribution_threshold || !rule) {
     // trigger rule
-    if (contribution === minThreshold) {
+    if (contribution === min_contribution_threshold) {
       // apply min score
-      score = minScore;
-      console.log("Using minThreshold.  Score = ", score);
-    } else if (contribution >= maxThreshold) {
+      score = min_score;
+      console.log("Using min_contribution_threshold.  Score = ", score);
+    } else if (contribution >= max_contribution_threshold) {
       // apply max score
-      score = maxScore;
-      console.log("Using maxThreshold.  Score = ", score);
+      score = max_score;
+      console.log("Using max_contribution_threshold.  Score = ", score);
     } else {
       // assign score with linear interpolation
       score =
-        minScore +
-        ((contribution - minThreshold) * (maxScore - minScore)) /
-          (maxThreshold - minThreshold);
+        min_score +
+        ((contribution - min_contribution_threshold) *
+          (max_score - min_score)) /
+          (max_contribution_threshold - min_contribution_threshold);
       score = Number(score.toFixed(0));
       console.log("calculating linear score. Score = ", score);
     }
@@ -211,16 +225,20 @@ function solution(tx_hash) {
   //   "contributions :>> ",
   //   JSON.stringify(analysis.contributions, null, 2)
   // );
+  let calculated_score = 0;
   analysis.contributions.forEach((source) => {
     console.log("source :>> ", source);
     const effectiveRulesForSource = getRuleForSource(source, rules);
+    console.log("effectiveRulesForSource :>> ", effectiveRulesForSource);
     const scoreForSource = getMergedScore(
       effectiveRulesForSource,
       source.pct_contribution
     );
+    console.log("scoreForSource :>> ", scoreForSource);
+    calculated_score += scoreForSource;
   });
   // Implement your solution here
-
+  console.log("calculated_score :>> ", calculated_score);
   return calculated_score;
 }
 solution("cfa052bed0e8376ba4daf2cbaadf2cfe8104dc6fc56658dc8cba24e077263792");

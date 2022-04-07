@@ -26,14 +26,14 @@ const rulesArrayData: Rule[] = [
     minScore: 3,
     maxThreshold: 84,
     maxScore: 56,
-    entities: ["Agora", "Nucleus Market", "Entity2"],
+    // entities: ["Agora", "Nucleus Market", "Entity2"],
   },
   {
     minThreshold: 69,
     minScore: 2,
     maxThreshold: 88,
     maxScore: 13,
-    // categories: ["Dark Market", "Another Category", "Some Category"],
+    categories: ["Dark Market", "Another Category", "Some Category"],
   },
   {
     minThreshold: 37,
@@ -138,14 +138,6 @@ const getRuleForSource = (source: Source, rulesArray: Rule[]) => {
   // category superceeds bc its last
   // TODO: find better way to guard against possible undefined values
   const mergedRules: MergedRules = { entityRule, categoryRule };
-  // const mergedRules: Rule = {
-  //   minThreshold: entityRule?.minThreshold,
-  //   minScore: entityRule?.minScore,
-  //   maxThreshold: entityRule?.maxThreshold,
-  //   maxScore: entityRule?.maxScore,
-  //   entities: entityRule?.entities,
-  //   categories: entityRule?.categories
-  // }
   console.log("mergedRules :>> ", mergedRules);
   return mergedRules;
 };

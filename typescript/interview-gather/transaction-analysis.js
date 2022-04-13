@@ -156,6 +156,7 @@ const getMergedScore = (mergedRules, contribution) => {
     mergedScore = entityScore;
   } else if (categoryRule) {
     const categoryScore = getScoreFromRule(categoryRule, contribution);
+    console.log("categoryScore :>> ", categoryScore);
     mergedScore = categoryScore;
   } else {
     mergedScore = 0;
@@ -184,12 +185,12 @@ const getScoreFromRule = (rule, contribution) => {
       console.log("Using max_contribution_threshold.  Score = ", score);
     } else {
       // assign score with linear interpolation
-      score =
+      linearScore =
         min_score +
         ((contribution - min_contribution_threshold) *
           (max_score - min_score)) /
           (max_contribution_threshold - min_contribution_threshold);
-      score = Number(score.toFixed(0));
+      score = linearScore;
       console.log("calculating linear score. Score = ", score);
     }
   } else {
@@ -197,6 +198,7 @@ const getScoreFromRule = (rule, contribution) => {
       `Minimum threshold not met for contribution: ${contribution}. Not applying rule`
     );
   }
+  console.log("scoreFromRule :>> ", score);
   return score;
 };
 
@@ -211,7 +213,8 @@ function solution(tx_hash) {
     );
     calculated_score += scoreForSource;
   });
-  return calculated_score;
+  return Math.round(calculated_score);
 }
-// solution("cfa052bed0e8376ba4daf2cbaadf2cfe8104dc6fc56658dc8cba24e077263792");
-solution("efc08a551c9cd52b682ed7dc092b2b0f252136d4120434994b94394c31d5d174");
+solution("cfa052bed0e8376ba4daf2cbaadf2cfe8104dc6fc56658dc8cba24e077263792");
+// solution("efc08a551c9cd52b682ed7dc092b2b0f252136d4120434994b94394c31d5d174");
+// solution("efc08a551c9cd52b682ed7dc092b2b0f252136d4120434994b94394c31d5d174");

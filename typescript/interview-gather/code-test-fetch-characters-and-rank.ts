@@ -45,16 +45,88 @@
 // - Batman
 // - Banana
 
+// **************************** Solution **********************************
 const _ = require("lodash");
 var fs = require("fs");
 const axios = require("axios");
-// const request = require("request");
-// function sayHello() {
-//   console.log('Hello, World');
-// }
 
-// _.times(5, sayHello);
+// const characters = fs.readFileSync("/home/coderpad/data/list.txt", "utf8");
+// const charArray = characters.split(/\r?\n/);
+const charArray = [
+  // existing
+  "pikachu",
+  "diglett",
+  "squirtle",
+  "ditto",
+  "psyduck",
+  "charizard",
+  "ekans",
+  "rattata",
+  "bulbasaur",
+  "mew",
 
+  // nonexistant
+  "batman",
+  "superman",
+  "banana",
+  "rambo",
+  "pizza",
+];
+
+const fetchPosts = async (name: string) => {
+  return axios.get(`https://pokeapi.co/api/v2/pokemon/${name}`);
+  // .then((result: any) => {
+  //   return result;
+  // })
+  // .catch((err: Error) => {
+  //   throw err;
+  // });
+};
+interface ValidCharacter {
+  name: string;
+  baseExperience: number;
+}
+export const getCharsAsync = async () => {
+  let topValid: ValidCharacter[] = [];
+  const invalid: string[] = [];
+  const valid: ValidCharacter[] = [];
+
+  const arrayOfPromises = charArray.map((name) => {
+    const postPromise = fetchPosts(name);
+    return postPromise;
+  });
+  const returnedPromises = await Promise.allSettled(arrayOfPromises);
+
+  // loop over and designate status
+  returnedPromises.forEach((char) => {
+    let httpResponse = char?.reason?.response.status || char?.value?.status;
+    // console.log("httpResponse :>> ", httpResponse);
+    // if (char.status === "fulfilled") {
+    if (httpResponse === 200) {
+      valid.push({
+        name: char?.value?.data?.name,
+        baseExperience: char?.value?.data?.base_experience,
+      });
+    }
+    if (httpResponse === 404) {
+      invalid.push(char?.reason?.config?.url);
+    }
+  });
+
+  console.log("valid: ", valid);
+  console.log("invalid: ", invalid);
+  topValid = valid
+    .sort(function (a, b) {
+      return b.baseExperience - a.baseExperience;
+    })
+    .slice(0, 3);
+  console.log("topValid = ", topValid);
+  console.log("returnedPromises :>> ", returnedPromises);
+};
+
+getCharsAsync();
+
+// ************************* Other approaches ******************************
 // try {
 //   var characters = fs.readFileSync("/home/coderpad/data/list.txt", "utf8");
 //   // console.log(data.toString());
@@ -184,94 +256,3 @@ const axios = require("axios");
 // }
 
 // ****************************************************************
-
-// const characters = fs.readFileSync("/home/coderpad/data/list.txt", "utf8");
-// const charArray = characters.split(/\r?\n/);
-const charArray = [
-  // "pikachu",
-  // "diglett",
-  // "squirtle",
-  // "ditto",
-  // "psyduck",
-  // "charizard",
-  // "ekans",
-  // "rattata",
-  // "bulbasaur",
-  "mew",
-
-  // "batman",
-  // "superman",
-  "banana",
-  "rambo",
-  "pizza",
-];
-
-const fetchPosts = async (name: string) => {
-  return axios
-    .get(`https://pokeapi.co/api/v2/pokemon/${name}`)
-    .then((result: any) => {
-      return result;
-    })
-    .catch((err: Error) => {
-      throw err;
-    });
-};
-
-export const getCharsAsync = async () => {
-  const topValid = [];
-  const invalid = [];
-  const valid = [];
-
-  const arrayOfPromises = charArray.map((name) => {
-    console.log("calling name :>> ", name);
-    const postPromise = fetchPosts(name);
-    return postPromise;
-  });
-  // console.log("arrayOfPromises before :>> ", arrayOfPromises);
-  const returnedPromises = await Promise.allSettled(arrayOfPromises);
-  // .catch((err: Error) => {
-  //   // console.log("A promise failed to resolve", JSON.stringify(err, null, 4));
-  //   // console.log("A promise failed to resolve", err.toJSON());
-  //   // Object.entries(err).forEach(([key, value]) => console.log(key, value));
-  //   console.log("err status :>> ", err.response.status);
-  //   console.log("err path :>> ", err.config.url);
-  //   // TODO: here add code to push to arrays
-  //   return arrayOfPromises;
-  // })
-  // .then((arrayOfPromises) => {
-  //   console.log(
-  //     "arrayOfPromises :>> ",
-  //     // JSON.stringify(arrayOfPromises, null, 2)
-  //     arrayOfPromises
-  //   );
-  //   return arrayOfPromises;
-  //   // full array of resolved promises
-  // });
-
-  returnedPromises.forEach((char) => {
-    // console.log("char.status :>> ", char.status);
-    if (char.status !== "fulfilled") {
-      // console.log("char :>> ", char);
-      // invalid.push(char.value.config.url);
-      invalid.push(char.reason.config.url);
-    } else {
-      // console.log( `Asynchronous ${post.data.base_experience} is fetched for ${name}`);
-      valid.push({
-        name: char.value.data.name,
-        baseExperience: char.value.data.base_experience,
-      });
-    }
-  });
-
-  console.log("valid: ", valid);
-  console.log("invalid: ", invalid);
-  topValid = valid
-    .sort(function (a, b) {
-      return b.base_experience - a.base_experience;
-    })
-    .slice(0, 3);
-  console.log("topValid = ", topValid);
-  console.log("returnedPromises :>> ", returnedPromises);
-};
-
-getCharsAsync();

@@ -73,15 +73,10 @@ const charArray = [
   "pizza",
 ];
 
-const fetchPosts = async (name: string) => {
+const fetchPosts = (name: string) => {
   return axios.get(`https://pokeapi.co/api/v2/pokemon/${name}`);
-  // .then((result: any) => {
-  //   return result;
-  // })
-  // .catch((err: Error) => {
-  //   throw err;
-  // });
 };
+
 interface ValidCharacter {
   name: string;
   baseExperience: number;
@@ -95,36 +90,53 @@ export const getCharsAsync = async () => {
     const postPromise = fetchPosts(name);
     return postPromise;
   });
-  const returnedPromises = await Promise.allSettled(arrayOfPromises);
+  try {
+    const returnedPromises = await Promise.allSettled(arrayOfPromises);
 
-  // loop over and designate status
-  returnedPromises.forEach((char) => {
-    let httpResponse = char?.reason?.response.status || char?.value?.status;
-    // console.log("httpResponse :>> ", httpResponse);
-    // if (char.status === "fulfilled") {
-    if (httpResponse === 200) {
-      valid.push({
-        name: char?.value?.data?.name,
-        baseExperience: char?.value?.data?.base_experience,
-      });
-    }
-    if (httpResponse === 404) {
-      invalid.push(char?.reason?.config?.url);
-    }
-  });
+    // // Another possible approach
+    // // resolved/fulfilled Promises' values
+    // const fulfilled = returnedPromises
+    //   .filter((result) => result.status === "fulfilled")
+    //   .map((result) => result?.value);
+    // console.log(fulfilled); // [{name: "John Doe", dateAccountCreated: "05-23-2018"}]
 
-  console.log("valid: ", valid);
-  console.log("invalid: ", invalid);
-  topValid = valid
-    .sort(function (a, b) {
-      return b.baseExperience - a.baseExperience;
-    })
-    .slice(0, 3);
-  console.log("topValid = ", topValid);
-  console.log("returnedPromises :>> ", returnedPromises);
+    // // rejected Promises' reasons
+    // const rejected = returnedPromises
+    //   .filter((result) => result.status === "rejected")
+    //   .map((result) => result?.reason);
+    // console.log(rejected); // ['failed to fetch']
+
+    // loop over and designate status
+    returnedPromises.forEach((char) => {
+      let httpResponse = char?.reason?.response.status || char?.value?.status;
+      // console.log("httpResponse :>> ", httpResponse);
+      if (httpResponse === 200) {
+        valid.push({
+          name: char?.value?.data?.name,
+          baseExperience: char?.value?.data?.base_experience,
+        });
+      }
+      if (httpResponse === 404) {
+        invalid.push(char?.reason?.config?.url);
+      }
+    });
+
+    console.log("valid: ", valid);
+    console.log("invalid: ", invalid);
+    topValid = valid
+      .sort(function (a, b) {
+        return b.baseExperience - a.baseExperience;
+      })
+      .slice(0, 3);
+    console.log("topValid = ", topValid);
+    console.log("returnedPromises :>> ", returnedPromises);
+    return { valid, invalid, topValid };
+  } catch (err) {
+    console.error(err);
+  }
 };
 
-getCharsAsync();
+getCharsAsync().then((result) => console.log("final result :>> ", result));
 
 // ************************* Other approaches ******************************
 // try {

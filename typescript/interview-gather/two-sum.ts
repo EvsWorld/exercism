@@ -23,6 +23,5 @@ export function twoSum(nums: number[], target: number): number[] | undefined {
       return [dict[num], index];
     }
     dict[target - num] = index;
-    // console.log("dict :>> ", dict);
   }
 }
